@@ -50,16 +50,28 @@ export const UnifiedSearchFilter: React.FC<UnifiedSearchFilterProps> = ({
     groupValue !== 'none' ||
     (dateFilter && dateFilter.value !== 'All');
 
+  // Get visible filters based on group selection
+  const getVisibleFilters = () => {
+    if (groupValue === 'none') {
+      return {}; // No filters when no grouping
+    }
+    
+    // Show all filters when grouping is selected
+    return filters;
+  };
+
+  const visibleFilters = getVisibleFilters();
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-      {/* Single Row Layout matching the reference image */}
-      <div className="px-4 py-3 flex items-center justify-between">
+      {/* Single Row Layout */}
+      <div className="px-4 py-3 flex items-center justify-between gap-4">
         {/* Left Side - Search */}
-        <div className="relative">
+        <div className="relative min-w-0 flex-shrink-0">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
           <input
             type="text"
-            placeholder="Search documents..."
+            placeholder="Search..."
             value={searchValue}
             onChange={(e) => onSearchChange(e.target.value)}
             className="pl-10 pr-4 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm w-64"
@@ -67,7 +79,7 @@ export const UnifiedSearchFilter: React.FC<UnifiedSearchFilterProps> = ({
         </div>
 
         {/* Center - Filters in a row */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-6 flex-1 justify-center">
           {/* Group By */}
           <div className="flex items-center space-x-2">
             <Group className="h-4 w-4 text-gray-500" />

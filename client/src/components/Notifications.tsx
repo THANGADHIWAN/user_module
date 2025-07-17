@@ -300,7 +300,36 @@ export const Notifications: React.FC = () => {
       (filters.status === 'Read' && notification.read) ||
       (filters.status === 'Unread' && !notification.read);
     
-    return matchesSearch && matchesCategory && matchesType && matchesPriority && matchesStatus;
+    // Date filtering
+    const matchesDate = dateFilter === 'All' || dateFilter === 'All Dates' || (() => {
+      const notificationDate = new Date(notification.timestamp);
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      
+      switch (dateFilter) {
+        case 'Today':
+          return notificationDate >= today;
+        case 'This Week':
+          const weekStart = new Date(today);
+          weekStart.setDate(today.getDate() - today.getDay());
+          return notificationDate >= weekStart;
+        case 'This Month':
+          const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+          return notificationDate >= monthStart;
+        case 'Last 30 Days':
+          const thirtyDaysAgo = new Date(today);
+          thirtyDaysAgo.setDate(today.getDate() - 30);
+          return notificationDate >= thirtyDaysAgo;
+        case 'Last 90 Days':
+          const ninetyDaysAgo = new Date(today);
+          ninetyDaysAgo.setDate(today.getDate() - 90);
+          return notificationDate >= ninetyDaysAgo;
+        default:
+          return true;
+      }
+    })();
+    
+    return matchesSearch && matchesCategory && matchesType && matchesPriority && matchesStatus && matchesDate;
   });
 
   // Apply sorting

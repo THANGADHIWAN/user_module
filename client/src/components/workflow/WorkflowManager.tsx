@@ -231,7 +231,36 @@ export const WorkflowManager: React.FC = () => {
     const matchesStatus = filters.status === 'All' || workflow.status === filters.status;
     const matchesCategory = filters.category === 'All' || workflow.category === filters.category;
     
-    return matchesSearch && matchesStatus && matchesCategory;
+    // Date filtering
+    const matchesDate = dateFilter === 'All' || dateFilter === 'All Dates' || (() => {
+      const workflowDate = new Date(workflow.createdDate);
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      
+      switch (dateFilter) {
+        case 'Today':
+          return workflowDate >= today;
+        case 'This Week':
+          const weekStart = new Date(today);
+          weekStart.setDate(today.getDate() - today.getDay());
+          return workflowDate >= weekStart;
+        case 'This Month':
+          const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+          return workflowDate >= monthStart;
+        case 'Last 30 Days':
+          const thirtyDaysAgo = new Date(today);
+          thirtyDaysAgo.setDate(today.getDate() - 30);
+          return workflowDate >= thirtyDaysAgo;
+        case 'Last 90 Days':
+          const ninetyDaysAgo = new Date(today);
+          ninetyDaysAgo.setDate(today.getDate() - 90);
+          return workflowDate >= ninetyDaysAgo;
+        default:
+          return true;
+      }
+    })();
+    
+    return matchesSearch && matchesStatus && matchesCategory && matchesDate;
   });
 
   // Apply sorting
@@ -338,13 +367,24 @@ export const WorkflowManager: React.FC = () => {
             />
 
             {/* Workflow List */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-              <WorkflowList
-                workflows={sortedWorkflows}
-                onEditWorkflow={handleEditWorkflow}
-                onDeleteWorkflow={handleDeleteWorkflow}
-                onOpenWorkflow={handleOpenWorkflow}
-              />
+            <div className="space-y-4">
+              {Object.entries(groupedWorkflows).map(([groupName, groupWorkflows]) => (
+                <div key={groupName}>
+                  {groupValue !== 'none' && (
+                    <div className="bg-gray-100 px-4 py-2 rounded-t-lg border-b border-gray-200">
+                      <h3 className="text-sm font-medium text-gray-900">{groupName} ({groupWorkflows.length})</h3>
+                    </div>
+                  )}
+                  <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+                    <WorkflowList
+                      workflows={groupWorkflows}
+                      onEditWorkflow={handleEditWorkflow}
+                      onDeleteWorkflow={handleDeleteWorkflow}
+                      onOpenWorkflow={handleOpenWorkflow}
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </>

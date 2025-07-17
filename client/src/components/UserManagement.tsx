@@ -205,7 +205,36 @@ export const UserManagement: React.FC = () => {
     const matchesRole = filters.role === 'All' || user.role === filters.role;
     const matchesDepartment = filters.department === 'All' || user.department === filters.department;
     
-    return matchesSearch && matchesStatus && matchesRole && matchesDepartment;
+    // Date filtering
+    const matchesDate = dateFilter === 'All' || dateFilter === 'All Dates' || (() => {
+      const userDate = new Date(user.lastLogin);
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      
+      switch (dateFilter) {
+        case 'Today':
+          return userDate >= today;
+        case 'This Week':
+          const weekStart = new Date(today);
+          weekStart.setDate(today.getDate() - today.getDay());
+          return userDate >= weekStart;
+        case 'This Month':
+          const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+          return userDate >= monthStart;
+        case 'Last 30 Days':
+          const thirtyDaysAgo = new Date(today);
+          thirtyDaysAgo.setDate(today.getDate() - 30);
+          return userDate >= thirtyDaysAgo;
+        case 'Last 90 Days':
+          const ninetyDaysAgo = new Date(today);
+          ninetyDaysAgo.setDate(today.getDate() - 90);
+          return userDate >= ninetyDaysAgo;
+        default:
+          return true;
+      }
+    })();
+    
+    return matchesSearch && matchesStatus && matchesRole && matchesDepartment && matchesDate;
   });
 
   // Apply sorting
@@ -376,19 +405,30 @@ export const UserManagement: React.FC = () => {
         )}
 
         {/* Table */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <UserTable
-            users={users}
-            selectedUsers={selectedUsers}
-            sortField={sortField}
-            sortDirection={sortDirection}
-            onSort={handleSort}
-            onSelectUser={handleSelectUser}
-            onSelectAll={handleSelectAll}
-            onViewUser={handleViewUser}
-            onEditUser={handleEditUser}
-            onDeleteUser={handleDeleteUser}
-          />
+        <div className="space-y-4">
+          {Object.entries(groupedUsers).map(([groupName, groupUsers]) => (
+            <div key={groupName}>
+              {groupValue !== 'none' && (
+                <div className="bg-gray-100 px-4 py-2 rounded-t-lg border-b border-gray-200">
+                  <h3 className="text-sm font-medium text-gray-900">{groupName} ({groupUsers.length})</h3>
+                </div>
+              )}
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+                <UserTable
+                  users={groupUsers}
+                  selectedUsers={selectedUsers}
+                  sortField={sortField}
+                  sortDirection={sortDirection}
+                  onSort={handleSort}
+                  onSelectUser={handleSelectUser}
+                  onSelectAll={handleSelectAll}
+                  onViewUser={handleViewUser}
+                  onEditUser={handleEditUser}
+                  onDeleteUser={handleDeleteUser}
+                />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
