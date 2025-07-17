@@ -112,7 +112,7 @@ export const AIChatbot: React.FC = () => {
   return (
     <div className="fixed bottom-6 right-6 z-50">
       <div className={`bg-white rounded-lg shadow-xl border border-gray-200 transition-all duration-300 chatbot-slide-up ${
-        isMinimized ? 'w-80 h-16' : 'w-80 h-96'
+        isMinimized ? 'w-80 h-16' : 'w-80 h-[480px]'
       }`}>
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-blue-50 rounded-t-lg">
@@ -144,7 +144,7 @@ export const AIChatbot: React.FC = () => {
         {!isMinimized && (
           <>
             {/* Messages */}
-            <div className="flex-1 p-4 h-72 overflow-y-auto space-y-3">
+            <div className="flex-1 p-4 overflow-y-auto space-y-3" style={{ height: '360px' }}>
               {messages.map((message) => (
                 <div
                   key={message.id}
@@ -181,7 +181,7 @@ export const AIChatbot: React.FC = () => {
             </div>
 
             {/* Input */}
-            <div className="p-4 border-t border-gray-200">
+            <div className="p-4 border-t border-gray-200 bg-gray-50">
               <div className="flex items-center space-x-2">
                 <input
                   type="text"
@@ -189,7 +189,7 @@ export const AIChatbot: React.FC = () => {
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Type your message..."
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
                 />
                 <button
                   onClick={handleSendMessage}

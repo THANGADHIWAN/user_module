@@ -4,9 +4,12 @@ import { FilterBar } from './FilterBar';
 import { UserDetailsModal } from './UserDetailsModal';
 import { AddUserModal } from './AddUserModal';
 import { ConfirmationModal } from './ConfirmationModal';
+import { PageHeader } from './common/PageHeader';
+import { StatsCard } from './common/StatsCard';
+import { UnifiedSearchFilter } from './common/UnifiedSearchFilter';
 import { useUserManagement } from '../hooks/useUserManagement';
 import { User } from '../types/user';
-import { Users } from 'lucide-react';
+import { Users, UserPlus, UserCheck, UserX, Clock } from 'lucide-react';
 
 export const UserManagement: React.FC = () => {
   const {
@@ -125,88 +128,249 @@ export const UserManagement: React.FC = () => {
     setIsAddModalOpen(false);
   };
 
-  return (
-    <div className="h-full flex flex-col bg-gray-25">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-8 py-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-heading text-gray-900">User Management</h1>
-            <p className="text-body text-gray-600 mt-1">Manage user accounts, roles, and permissions</p>
-          </div>
-          <div className="flex items-center space-x-6">
-            <div className="flex items-center space-x-2 text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">
-              <Users className="h-4 w-4" />
-              <span className="font-medium">{users.length} users</span>
-            </div>
-          </div>
-        </div>
-      </div>
+  // Calculate stats
+  const activeUsers = users.filter(user => user.status === 'Active');
+  const inactiveUsers = users.filter(user => user.status === 'Inactive');
+  const pendingUsers = users.filter(user => user.status === 'Pending');
 
-      {/* Main Content */}
-      <div className="flex-1 px-8 py-6 space-y-6 overflow-auto">
-        <FilterBar
-          filters={filters}
-          onFilterChange={setFilters}
-          selectedCount={selectedUsers.size}
-          onAddUser={handleAddUser}
-          onExportUsers={exportToCSV}
-          onBulkActivate={handleBulkActivate}
-          onBulkDeactivate={handleBulkDeactivate}
-          onBulkDelete={handleBulkDelete}
+  // Search and Filter State
+  const [searchValue, setSearchValue] = useState('');
+  const [sortValue, setSortValue] = useState('name');
+  const [groupValue, setGroupValue] = useState('none');
+
+  const unifiedFilters = {
+    status: {
+      value: filters.status,
+      options: [
+        { value: 'All', label: 'All Status' },
+        { value: 'Active', label: 'Active' },
+        { value: 'Inactive', label: 'Inactive' },
+        { value: 'Pending', label: 'Pending' }
+      ],
+      label: 'Status'
+    },
+    role: {
+      value: filters.role,
+      options: [
+        { value: 'All', label: 'All Roles' },
+        { value: 'System Administrator', label: 'System Administrator' },
+        { value: 'Lab Manager', label: 'Lab Manager' },
+        { value: 'Senior Analyst', label: 'Senior Analyst' },
+        { value: 'Analyst', label: 'Analyst' },
+        { value: 'Quality Assurance', label: 'Quality Assurance' },
+        { value: 'Analyst Trainee', label: 'Analyst Trainee' }
+      ],
+      label: 'Role'
+    },
+    department: {
+      value: filters.department,
+      options: [
+        { value: 'All', label: 'All Departments' },
+        { value: 'Quality Control', label: 'Quality Control' },
+        { value: 'Research & Development', label: 'Research & Development' },
+        { value: 'Production', label: 'Production' },
+        { value: 'Regulatory Affairs', label: 'Regulatory Affairs' },
+        { value: 'IT', label: 'IT' }
+      ],
+      label: 'Department'
+    }
+  };
+
+  const handleFilterChange = (filterKey: string, value: string) => {
+    setFilters(prev => ({ ...prev, [filterKey]: value }));
+  };
+
+  const handleClearAll = () => {
+    setSearchValue('');
+    setSortValue('name');
+    setGroupValue('none');
+    setFilters({
+      status: 'All',
+      role: 'All',
+      department: 'All'
+    });
+  };
+
+  const handleExport = () => {
+    exportToCSV();
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null);
+  };
+
+  const handleSaveUser = (userData: Partial<User>) => {
+    if (selectedUser) {
+      updateUser(selectedUser.id, userData);
+    }
+    handleCloseModal();
+  };
+
+  const handleAddNewUser = (userData: Omit<User, 'id'>) => {
+    addUser(userData);
+    setIsAddModalOpen(false);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Page Header */}
+      <PageHeader
+        title="User Management"
+        subtitle="Manage user accounts, roles, and permissions"
+        icon={Users}
+        breadcrumbs={[
+          { label: 'Dashboard', href: '/' },
+          { label: 'User Management' }
+        ]}
+        actions={
+          <>
+            <button
+              onClick={handleExport}
+              className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+            >
+              Export CSV
+            </button>
+            <button
+              onClick={handleAddUser}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center space-x-2"
+            >
+              <UserPlus className="h-4 w-4" />
+              <span>Add User</span>
+            </button>
+          </>
+        }
+      />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <StatsCard
+            title="Total Users"
+            value={users.length}
+            icon={Users}
+            color="blue"
+          />
+          <StatsCard
+            title="Active Users"
+            value={activeUsers.length}
+            icon={UserCheck}
+            color="green"
+          />
+          <StatsCard
+            title="Inactive Users"
+            value={inactiveUsers.length}
+            icon={UserX}
+            color="red"
+          />
+          <StatsCard
+            title="Pending Users"
+            value={pendingUsers.length}
+            icon={Clock}
+            color="yellow"
+          />
+        </div>
+
+        {/* Unified Search and Filter */}
+        <UnifiedSearchFilter
+          searchValue={searchValue}
+          onSearchChange={setSearchValue}
+          filters={unifiedFilters}
+          onFilterChange={handleFilterChange}
+          onClearAll={handleClearAll}
+          sortOptions={[
+            { value: 'name', label: 'Name' },
+            { value: 'email', label: 'Email' },
+            { value: 'role', label: 'Role' },
+            { value: 'department', label: 'Department' },
+            { value: 'lastLogin', label: 'Last Login' }
+          ]}
+          sortValue={sortValue}
+          onSortChange={setSortValue}
+          groupOptions={[
+            { value: 'none', label: 'No Grouping' },
+            { value: 'role', label: 'Group by Role' },
+            { value: 'department', label: 'Group by Department' },
+            { value: 'status', label: 'Group by Status' }
+          ]}
+          groupValue={groupValue}
+          onGroupChange={setGroupValue}
         />
 
-        <div className="card">
+        {/* Bulk Actions */}
+        {selectedUsers.size > 0 && (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <span className="text-sm font-medium text-gray-700">
+                  {selectedUsers.size} user(s) selected
+                </span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={handleBulkActivate}
+                  className="px-3 py-1.5 text-sm font-medium text-green-700 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg transition-colors"
+                >
+                  Activate
+                </button>
+                <button
+                  onClick={handleBulkDeactivate}
+                  className="px-3 py-1.5 text-sm font-medium text-yellow-700 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg transition-colors"
+                >
+                  Deactivate
+                </button>
+                <button
+                  onClick={handleBulkDelete}
+                  className="px-3 py-1.5 text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg transition-colors"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Table */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
           <UserTable
             users={users}
             selectedUsers={selectedUsers}
+            sortField={sortField}
+            sortDirection={sortDirection}
+            onSort={handleSort}
             onSelectUser={handleSelectUser}
             onSelectAll={handleSelectAll}
             onViewUser={handleViewUser}
             onEditUser={handleEditUser}
             onDeleteUser={handleDeleteUser}
-            sortField={sortField}
-            sortDirection={sortDirection}
-            onSort={handleSort}
           />
         </div>
-
-        {users.length === 0 && (
-          <div className="text-center py-16">
-            <div className="bg-gray-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-              <Users className="h-10 w-10 text-gray-400" />
-            </div>
-            <h3 className="text-subheading text-gray-900">No users found</h3>
-            <p className="text-body text-gray-500 mt-2">
-              Try adjusting your search criteria or filters.
-            </p>
-          </div>
-        )}
       </div>
 
       {/* Modals */}
       <UserDetailsModal
         user={selectedUser}
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={updateUser}
         isEditing={isEditing}
+        onClose={handleCloseModal}
+        onSave={handleSaveUser}
+        onEdit={() => setIsEditing(true)}
       />
 
       <AddUserModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        onSave={handleSaveNewUser}
+        onSave={handleAddNewUser}
       />
 
       <ConfirmationModal
         isOpen={confirmationModal.isOpen}
-        onClose={() => setConfirmationModal({ ...confirmationModal, isOpen: false })}
-        onConfirm={confirmationModal.onConfirm}
         title={confirmationModal.title}
         message={confirmationModal.message}
         confirmText={confirmationModal.confirmText}
         confirmVariant={confirmationModal.confirmVariant}
+        onConfirm={confirmationModal.onConfirm}
+        onCancel={() => setConfirmationModal({ ...confirmationModal, isOpen: false })}
       />
     </div>
   );

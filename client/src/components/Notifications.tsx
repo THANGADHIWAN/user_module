@@ -13,8 +13,12 @@ import {
   User,
   Calendar,
   Filter,
-  Search
+  Search,
+  Plus
 } from 'lucide-react';
+import { PageHeader } from './common/PageHeader';
+import { StatsCard } from './common/StatsCard';
+import { UnifiedSearchFilter } from './common/UnifiedSearchFilter';
 
 interface Notification {
   id: string;
