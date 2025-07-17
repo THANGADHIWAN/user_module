@@ -126,23 +126,25 @@ export const UserManagement: React.FC = () => {
   };
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col bg-gray-25">
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-gray-200">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
-          <p className="text-gray-600">Manage user accounts, roles, and permissions</p>
-        </div>
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2 text-sm text-gray-600">
-            <Users className="h-4 w-4" />
-            <span>{users.length} users</span>
+      <div className="bg-white border-b border-gray-200 px-8 py-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-heading text-gray-900">User Management</h1>
+            <p className="text-body text-gray-600 mt-1">Manage user accounts, roles, and permissions</p>
+          </div>
+          <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-2 text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">
+              <Users className="h-4 w-4" />
+              <span className="font-medium">{users.length} users</span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-6 space-y-6">
+      <div className="flex-1 px-8 py-6 space-y-6 overflow-auto">
         <FilterBar
           filters={filters}
           onFilterChange={setFilters}
@@ -154,24 +156,28 @@ export const UserManagement: React.FC = () => {
           onBulkDelete={handleBulkDelete}
         />
 
-        <UserTable
-          users={users}
-          selectedUsers={selectedUsers}
-          onSelectUser={handleSelectUser}
-          onSelectAll={handleSelectAll}
-          onViewUser={handleViewUser}
-          onEditUser={handleEditUser}
-          onDeleteUser={handleDeleteUser}
-          sortField={sortField}
-          sortDirection={sortDirection}
-          onSort={handleSort}
-        />
+        <div className="card">
+          <UserTable
+            users={users}
+            selectedUsers={selectedUsers}
+            onSelectUser={handleSelectUser}
+            onSelectAll={handleSelectAll}
+            onViewUser={handleViewUser}
+            onEditUser={handleEditUser}
+            onDeleteUser={handleDeleteUser}
+            sortField={sortField}
+            sortDirection={sortDirection}
+            onSort={handleSort}
+          />
+        </div>
 
         {users.length === 0 && (
-          <div className="text-center py-12">
-            <Users className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No users found</h3>
-            <p className="mt-1 text-sm text-gray-500">
+          <div className="text-center py-16">
+            <div className="bg-gray-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+              <Users className="h-10 w-10 text-gray-400" />
+            </div>
+            <h3 className="text-subheading text-gray-900">No users found</h3>
+            <p className="text-body text-gray-500 mt-2">
               Try adjusting your search criteria or filters.
             </p>
           </div>

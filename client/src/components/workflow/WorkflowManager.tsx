@@ -160,26 +160,28 @@ export const WorkflowManager: React.FC = () => {
   };
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col bg-gray-25">
       {currentView === 'list' ? (
         <>
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Workflow Management</h1>
-              <p className="text-gray-600">Create and manage approval workflows</p>
+          <div className="bg-white border-b border-gray-200 px-8 py-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-heading text-gray-900">Workflow Management</h1>
+                <p className="text-body text-gray-600 mt-1">Create and manage approval workflows</p>
+              </div>
+              <button
+                onClick={handleCreateWorkflow}
+                className="btn-primary inline-flex items-center space-x-2"
+              >
+                <Plus className="h-5 w-5" />
+                <span>Create Workflow</span>
+              </button>
             </div>
-            <button
-              onClick={handleCreateWorkflow}
-              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-            >
-              <Plus className="h-5 w-5" />
-              <span>Create Workflow</span>
-            </button>
           </div>
 
           {/* Workflow List */}
-          <div className="flex-1 p-6">
+          <div className="flex-1 px-8 py-6 overflow-auto">
             <WorkflowList
               workflows={workflows}
               onEditWorkflow={handleEditWorkflow}
@@ -191,21 +193,21 @@ export const WorkflowManager: React.FC = () => {
       ) : (
         <>
           {/* Builder Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-white">
-            <div className="flex items-center space-x-4">
+          <div className="bg-white border-b border-gray-200 px-8 py-6">
+            <div className="flex items-center space-x-6">
               <button
                 onClick={() => setCurrentView('list')}
-                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
+                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors p-2 -m-2 rounded-lg hover:bg-gray-50"
               >
                 <ArrowLeft className="h-5 w-5" />
-                <span>Back to Workflows</span>
+                <span className="font-medium">Back to Workflows</span>
               </button>
               <div className="h-6 w-px bg-gray-300" />
               <div>
-                <h1 className="text-xl font-semibold text-gray-900">
+                <h1 className="text-subheading text-gray-900">
                   {selectedWorkflow ? selectedWorkflow.name : 'New Workflow'}
                 </h1>
-                <p className="text-sm text-gray-500">
+                <p className="text-caption">
                   {selectedWorkflow ? 'Edit workflow' : 'Create new workflow'}
                 </p>
               </div>
@@ -213,7 +215,7 @@ export const WorkflowManager: React.FC = () => {
           </div>
 
           {/* Workflow Builder */}
-          <div className="flex-1">
+          <div className="flex-1 overflow-hidden">
             <WorkflowBuilder
               workflow={selectedWorkflow || undefined}
               onSave={handleSaveWorkflow}

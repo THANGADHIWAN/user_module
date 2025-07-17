@@ -38,11 +38,13 @@ function App() {
   };
 
   return (
-    <div className="h-screen bg-gray-50 flex">
+    <div className="h-screen bg-gray-25 flex overflow-hidden">
       <Sidebar activeModule={activeModule} onModuleChange={setActiveModule} />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <main className="flex-1 overflow-hidden bg-gray-50">
-          {renderModule()}
+      <div className="flex-1 flex flex-col min-w-0">
+        <main className="flex-1 overflow-auto bg-gray-25 animate-fade-in">
+          <div className="h-full">
+            {renderModule()}
+          </div>
         </main>
       </div>
     </div>
