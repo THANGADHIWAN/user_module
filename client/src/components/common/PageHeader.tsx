@@ -1,36 +1,42 @@
 import React from 'react';
-import { LucideIcon } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
+
+interface Breadcrumb {
+  label: string;
+  href?: string;
+}
 
 interface PageHeaderProps {
   title: string;
   subtitle?: string;
-  icon: LucideIcon;
+  icon?: React.ComponentType<{ className?: string }>;
+  breadcrumbs?: Breadcrumb[];
   actions?: React.ReactNode;
-  breadcrumbs?: { label: string; href?: string }[];
 }
 
-export const PageHeader: React.FC<PageHeaderProps> = ({
-  title,
-  subtitle,
-  icon: Icon,
-  actions,
-  breadcrumbs
+export const PageHeader: React.FC<PageHeaderProps> = ({ 
+  title, 
+  subtitle, 
+  icon: Icon, 
+  breadcrumbs, 
+  actions 
 }) => {
   return (
-    <div className="bg-white border-b border-gray-200">
+    <div className="bg-white shadow-sm border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="py-6">
+        <div className="py-4">
           {/* Breadcrumbs */}
           {breadcrumbs && (
-            <nav className="mb-4">
-              <ol className="flex items-center space-x-2 text-sm text-gray-500">
+            <nav className="mb-3">
+              <ol className="flex items-center space-x-2 text-sm">
                 {breadcrumbs.map((crumb, index) => (
                   <li key={index} className="flex items-center">
-                    {index > 0 && (
-                      <span className="mx-2 text-gray-300">/</span>
-                    )}
+                    {index > 0 && <ChevronRight className="h-3 w-3 text-gray-400 mx-2" />}
                     {crumb.href ? (
-                      <a href={crumb.href} className="hover:text-gray-700">
+                      <a 
+                        href={crumb.href} 
+                        className="text-gray-500 hover:text-gray-700 transition-colors"
+                      >
                         {crumb.label}
                       </a>
                     ) : (
@@ -44,19 +50,21 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
 
           {/* Header Content */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-blue-100 rounded-xl">
-                <Icon className="h-8 w-8 text-blue-600" />
-              </div>
+            <div className="flex items-center space-x-3">
+              {Icon && (
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Icon className="h-5 w-5 text-blue-600" />
+                </div>
+              )}
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+                <h1 className="text-lg font-semibold text-gray-900">{title}</h1>
                 {subtitle && (
-                  <p className="mt-1 text-sm text-gray-600">{subtitle}</p>
+                  <p className="mt-0.5 text-sm text-gray-600">{subtitle}</p>
                 )}
               </div>
             </div>
             {actions && (
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2">
                 {actions}
               </div>
             )}

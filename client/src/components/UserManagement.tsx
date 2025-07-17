@@ -137,6 +137,7 @@ export const UserManagement: React.FC = () => {
   const [searchValue, setSearchValue] = useState('');
   const [sortValue, setSortValue] = useState('name');
   const [groupValue, setGroupValue] = useState('none');
+  const [dateFilter, setDateFilter] = useState('All');
 
   const unifiedFilters = {
     status: {
@@ -184,6 +185,7 @@ export const UserManagement: React.FC = () => {
     setSearchValue('');
     setSortValue('name');
     setGroupValue('none');
+    setDateFilter('All');
     setFilters({
       status: 'All',
       role: 'All',
@@ -227,13 +229,13 @@ export const UserManagement: React.FC = () => {
           <>
             <button
               onClick={handleExport}
-              className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              className="px-3 py-1.5 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
             >
               Export CSV
             </button>
             <button
               onClick={handleAddUser}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center space-x-2"
+              className="px-3 py-1.5 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors flex items-center space-x-2"
             >
               <UserPlus className="h-4 w-4" />
               <span>Add User</span>
@@ -288,13 +290,17 @@ export const UserManagement: React.FC = () => {
           sortValue={sortValue}
           onSortChange={setSortValue}
           groupOptions={[
-            { value: 'none', label: 'No Grouping' },
-            { value: 'role', label: 'Group by Role' },
-            { value: 'department', label: 'Group by Department' },
-            { value: 'status', label: 'Group by Status' }
+            { value: 'none', label: 'None' },
+            { value: 'role', label: 'Role' },
+            { value: 'department', label: 'Department' },
+            { value: 'status', label: 'Status' }
           ]}
           groupValue={groupValue}
           onGroupChange={setGroupValue}
+          dateFilter={{
+            value: dateFilter,
+            onChange: setDateFilter
+          }}
         />
 
         {/* Bulk Actions */}

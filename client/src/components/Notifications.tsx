@@ -125,13 +125,15 @@ const sampleTemplates: NotificationTemplate[] = [
 ];
 
 export const Notifications: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'templates' | 'settings'>('templates');
+  const [activeTab, setActiveTab] = useState<'notifications' | 'templates' | 'settings'>('notifications');
   const [notifications, setNotifications] = useState<Notification[]>(sampleNotifications);
   const [templates, setTemplates] = useState<NotificationTemplate[]>(sampleTemplates);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterCategory, setFilterCategory] = useState<string>('All');
-  const [filterType, setFilterType] = useState<string>('All');
-  const [showUnreadOnly, setShowUnreadOnly] = useState(false);
+  
+  // Search and Filter State
+  const [searchValue, setSearchValue] = useState('');
+  const [sortValue, setSortValue] = useState('timestamp');
+  const [groupValue, setGroupValue] = useState('none');
+  const [dateFilter, setDateFilter] = useState('All');
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
@@ -184,25 +186,81 @@ export const Notifications: React.FC = () => {
   };
 
   const filteredNotifications = notifications.filter(notif => {
-    const matchesSearch = notif.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         notif.message.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = filterCategory === 'All' || notif.category === filterCategory;
-    const matchesType = filterType === 'All' || notif.type === filterType;
-    const matchesRead = !showUnreadOnly || !notif.read;
-    return matchesSearch && matchesCategory && matchesType && matchesRead;
+    const matchesSearch = notif.title.toLowerCase().includes(searchValue.toLowerCase()) ||
+                         notif.message.toLowerCase().includes(searchValue.toLowerCase());
+    return matchesSearch;
   });
 
   const unreadCount = notifications.filter(n => !n.read).length;
-  const categories = ['All', ...Array.from(new Set(notifications.map(n => n.category)))];
-  const types = ['All', 'info', 'warning', 'error', 'success'];
+  const totalNotifications = notifications.length;
+  const highPriorityCount = notifications.filter(n => n.priority === 'high').length;
+  const actionRequiredCount = notifications.filter(n => n.actionRequired).length;
+
+  // Unified filters
+  const unifiedFilters = {
+    category: {
+      value: 'All',
+      options: [
+        { value: 'All', label: 'All Categories' },
+        { value: 'System', label: 'System' },
+        { value: 'Workflow', label: 'Workflow' },
+        { value: 'User', label: 'User' },
+        { value: 'Security', label: 'Security' },
+        { value: 'Backup', label: 'Backup' }
+      ],
+      label: 'Category'
+    },
+    type: {
+      value: 'All',
+      options: [
+        { value: 'All', label: 'All Types' },
+        { value: 'info', label: 'Info' },
+        { value: 'warning', label: 'Warning' },
+        { value: 'error', label: 'Error' },
+        { value: 'success', label: 'Success' }
+      ],
+      label: 'Type'
+    },
+    priority: {
+      value: 'All',
+      options: [
+        { value: 'All', label: 'All Priorities' },
+        { value: 'high', label: 'High' },
+        { value: 'medium', label: 'Medium' },
+        { value: 'low', label: 'Low' }
+      ],
+      label: 'Priority'
+    },
+    status: {
+      value: 'All',
+      options: [
+        { value: 'All', label: 'All Status' },
+        { value: 'Read', label: 'Read' },
+        { value: 'Unread', label: 'Unread' }
+      ],
+      label: 'Status'
+    }
+  };
+
+  const handleFilterChange = (filterKey: string, value: string) => {
+    // Filter change logic
+  };
+
+  const handleClearAll = () => {
+    setSearchValue('');
+    setSortValue('timestamp');
+    setGroupValue('none');
+    setDateFilter('All');
+  };
 
   const tabs = [
+    { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'templates', label: 'Templates', icon: Mail },
     { id: 'settings', label: 'Settings', icon: Settings }
   ];
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="flex items-center justify-between p-6 border-b border-gray-200">
         <div>

@@ -1,29 +1,33 @@
-import React, { useState } from 'react';
-import { Search, Filter, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
+import React from 'react';
+import { Search, Filter, Group, Calendar, X } from 'lucide-react';
 
 interface FilterOption {
   value: string;
   label: string;
 }
 
+interface FilterConfig {
+  value: string;
+  options: FilterOption[];
+  label: string;
+}
+
 interface UnifiedSearchFilterProps {
   searchValue: string;
   onSearchChange: (value: string) => void;
-  filters: {
-    [key: string]: {
-      value: string;
-      options: FilterOption[];
-      label: string;
-    };
-  };
+  filters: Record<string, FilterConfig>;
   onFilterChange: (filterKey: string, value: string) => void;
   onClearAll: () => void;
-  sortOptions?: FilterOption[];
-  sortValue?: string;
-  onSortChange?: (value: string) => void;
-  groupOptions?: FilterOption[];
-  groupValue?: string;
-  onGroupChange?: (value: string) => void;
+  sortOptions: FilterOption[];
+  sortValue: string;
+  onSortChange: (value: string) => void;
+  groupOptions: FilterOption[];
+  groupValue: string;
+  onGroupChange: (value: string) => void;
+  dateFilter?: {
+    value: string;
+    onChange: (value: string) => void;
+  };
 }
 
 export const UnifiedSearchFilter: React.FC<UnifiedSearchFilterProps> = ({
@@ -38,118 +42,113 @@ export const UnifiedSearchFilter: React.FC<UnifiedSearchFilterProps> = ({
   groupOptions,
   groupValue,
   onGroupChange,
+  dateFilter
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const hasActiveFilters = Object.values(filters).some(filter => filter.value !== 'All') || 
-                          searchValue.length > 0 || 
-                          (sortValue && sortValue !== 'name') ||
-                          (groupValue && groupValue !== 'none');
+  const hasActiveFilters = searchValue || 
+    Object.values(filters).some(filter => filter.value !== 'All' && filter.value !== 'none') ||
+    sortValue !== sortOptions[0]?.value ||
+    groupValue !== 'none' ||
+    (dateFilter && dateFilter.value !== 'All');
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-      {/* Search Bar */}
-      <div className="relative mb-4">
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <Search className="h-5 w-5 text-gray-400" />
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+      {/* Single Row Layout matching the reference image */}
+      <div className="px-4 py-3 flex items-center space-x-4">
+        {/* Left Side - Search */}
+        <div className="relative flex-1 max-w-xs">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search documents..."
+            value={searchValue}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="w-full pl-10 pr-4 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
+          />
         </div>
-        <input
-          type="text"
-          value={searchValue}
-          onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Search..."
-          className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        />
-      </div>
 
-      {/* Filter Toggle Button */}
-      <div className="flex items-center justify-between mb-4">
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 border border-gray-300 rounded-lg transition-colors"
-        >
-          <SlidersHorizontal className="h-4 w-4" />
-          <span>Advanced Filters</span>
-          <ChevronDown className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-        </button>
-        
+        {/* Group By */}
+        <div className="flex items-center space-x-2">
+          <Group className="h-4 w-4 text-gray-500" />
+          <span className="text-sm text-gray-700 font-medium">Group by:</span>
+          <select
+            value={groupValue}
+            onChange={(e) => onGroupChange(e.target.value)}
+            className="px-3 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white"
+          >
+            {groupOptions.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Filter Dropdowns */}
+        <div className="flex items-center space-x-2">
+          <Filter className="h-4 w-4 text-gray-500" />
+          <span className="text-sm text-gray-700 font-medium">Filter:</span>
+          {Object.entries(filters).map(([key, config]) => (
+            <select
+              key={key}
+              value={config.value}
+              onChange={(e) => onFilterChange(key, e.target.value)}
+              className="px-3 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white"
+            >
+              {config.options.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          ))}
+        </div>
+
+        {/* Sort */}
+        <div className="flex items-center space-x-2">
+          <span className="text-sm text-gray-700 font-medium">Sort:</span>
+          <select
+            value={sortValue}
+            onChange={(e) => onSortChange(e.target.value)}
+            className="px-3 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white"
+          >
+            {sortOptions.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Date Filter */}
+        {dateFilter && (
+          <div className="flex items-center space-x-2">
+            <Calendar className="h-4 w-4 text-gray-500" />
+            <span className="text-sm text-gray-700 font-medium">Created:</span>
+            <select
+              value={dateFilter.value}
+              onChange={(e) => dateFilter.onChange(e.target.value)}
+              className="px-3 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white"
+            >
+              <option value="All">All Dates</option>
+              <option value="Today">Today</option>
+              <option value="This Week">This Week</option>
+              <option value="This Month">This Month</option>
+              <option value="Last 30 Days">Last 30 Days</option>
+              <option value="Last 90 Days">Last 90 Days</option>
+            </select>
+          </div>
+        )}
+
+        {/* Clear Button */}
         {hasActiveFilters && (
           <button
             onClick={onClearAll}
-            className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-300 rounded-lg transition-colors"
+            className="flex items-center space-x-1 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
           >
-            <X className="h-4 w-4" />
-            <span>Clear All</span>
+            <span>Clear</span>
           </button>
         )}
       </div>
-
-      {/* Expanded Filters */}
-      {isExpanded && (
-        <div className="space-y-4 pt-4 border-t border-gray-200">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {/* Dynamic Filters */}
-            {Object.entries(filters).map(([key, filter]) => (
-              <div key={key} className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  {filter.label}
-                </label>
-                <select
-                  value={filter.value}
-                  onChange={(e) => onFilterChange(key, e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                >
-                  {filter.options.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            ))}
-
-            {/* Sort Options */}
-            {sortOptions && onSortChange && (
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  Sort By
-                </label>
-                <select
-                  value={sortValue}
-                  onChange={(e) => onSortChange(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                >
-                  {sortOptions.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-
-            {/* Group Options */}
-            {groupOptions && onGroupChange && (
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  Group By
-                </label>
-                <select
-                  value={groupValue}
-                  onChange={(e) => onGroupChange(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                >
-                  {groupOptions.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 };

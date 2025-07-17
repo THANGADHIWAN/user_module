@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { WorkflowBuilder } from './WorkflowBuilder';
 import { WorkflowList } from './WorkflowList';
+import { PageHeader } from '../common/PageHeader';
+import { StatsCard } from '../common/StatsCard';
+import { UnifiedSearchFilter } from '../common/UnifiedSearchFilter';
 import { Workflow, WorkflowCategory } from '../../types/workflow';
-import { Plus, ArrowLeft } from 'lucide-react';
+import { Plus, ArrowLeft, GitBranch, Play, Pause, CheckCircle } from 'lucide-react';
 
 const sampleWorkflows: Workflow[] = [
   {
@@ -113,6 +116,12 @@ export const WorkflowManager: React.FC = () => {
   const [workflows, setWorkflows] = useState<Workflow[]>(sampleWorkflows);
   const [currentView, setCurrentView] = useState<'list' | 'builder'>('list');
   const [selectedWorkflow, setSelectedWorkflow] = useState<Workflow | null>(null);
+  
+  // Search and Filter State
+  const [searchValue, setSearchValue] = useState('');
+  const [sortValue, setSortValue] = useState('name');
+  const [groupValue, setGroupValue] = useState('none');
+  const [dateFilter, setDateFilter] = useState('All');
 
   const handleCreateWorkflow = () => {
     setSelectedWorkflow(null);
