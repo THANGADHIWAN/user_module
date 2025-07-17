@@ -139,9 +139,16 @@ export const UserManagement: React.FC = () => {
   const [groupValue, setGroupValue] = useState('none');
   const [dateFilter, setDateFilter] = useState('All');
 
+  // Filter state
+  const [filterState, setFilterState] = useState({
+    status: 'All',
+    role: 'All',
+    department: 'All'
+  });
+
   const unifiedFilters = {
     status: {
-      value: filters.status,
+      value: filterState.status,
       options: [
         { value: 'All', label: 'All Status' },
         { value: 'Active', label: 'Active' },
@@ -151,7 +158,7 @@ export const UserManagement: React.FC = () => {
       label: 'Status'
     },
     role: {
-      value: filters.role,
+      value: filterState.role,
       options: [
         { value: 'All', label: 'All Roles' },
         { value: 'System Administrator', label: 'System Administrator' },
@@ -164,7 +171,7 @@ export const UserManagement: React.FC = () => {
       label: 'Role'
     },
     department: {
-      value: filters.department,
+      value: filterState.department,
       options: [
         { value: 'All', label: 'All Departments' },
         { value: 'Quality Control', label: 'Quality Control' },
@@ -178,7 +185,7 @@ export const UserManagement: React.FC = () => {
   };
 
   const handleFilterChange = (filterKey: string, value: string) => {
-    setFilters(prev => ({ ...prev, [filterKey]: value }));
+    setFilterState(prev => ({ ...prev, [filterKey]: value }));
   };
 
   const handleClearAll = () => {
@@ -186,7 +193,7 @@ export const UserManagement: React.FC = () => {
     setSortValue('name');
     setGroupValue('none');
     setDateFilter('All');
-    setFilters({
+    setFilterState({
       status: 'All',
       role: 'All',
       department: 'All'
@@ -201,9 +208,9 @@ export const UserManagement: React.FC = () => {
       user.role.toLowerCase().includes(searchValue.toLowerCase()) ||
       (user.department && user.department.toLowerCase().includes(searchValue.toLowerCase()));
     
-    const matchesStatus = filters.status === 'All' || user.status === filters.status;
-    const matchesRole = filters.role === 'All' || user.role === filters.role;
-    const matchesDepartment = filters.department === 'All' || user.department === filters.department;
+    const matchesStatus = filterState.status === 'All' || user.status === filterState.status;
+    const matchesRole = filterState.role === 'All' || user.role === filterState.role;
+    const matchesDepartment = filterState.department === 'All' || user.department === filterState.department;
     
     // Date filtering
     const matchesDate = dateFilter === 'All' || dateFilter === 'All Dates' || (() => {
@@ -247,7 +254,7 @@ export const UserManagement: React.FC = () => {
       case 'role':
         return a.role.localeCompare(b.role);
       case 'department':
-        return a.department.localeCompare(b.department);
+        return (a.department || '').localeCompare(b.department || '');
       case 'lastLogin':
         return new Date(b.lastLogin).getTime() - new Date(a.lastLogin).getTime();
       default:
@@ -259,7 +266,7 @@ export const UserManagement: React.FC = () => {
   const groupedUsers = groupValue === 'none' ? 
     { 'All Users': sortedUsers } : 
     sortedUsers.reduce((groups, user) => {
-      const key = user[groupValue as keyof typeof user] as string;
+      const key = (user[groupValue as keyof typeof user] as string) || 'Unassigned';
       if (!groups[key]) groups[key] = [];
       groups[key].push(user);
       return groups;
