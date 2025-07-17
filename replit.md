@@ -11,6 +11,11 @@ A comprehensive pharmaceutical laboratory information management system (LIMS) f
 - **2025-01-17**: Redesigned sidebar to icon-only with tooltips on hover
 - **2025-01-17**: Added AI chatbot for help and support with floating interface
 - **2025-01-17**: Removed Help & Support from main navigation menu
+- **2025-01-17**: Implemented unified search and filter system based on user reference image
+- **2025-01-17**: Removed breadcrumbs from all pages as requested
+- **2025-01-17**: Reduced left and right spacing throughout the application
+- **2025-01-17**: Fixed filter layout to show selective filters instead of all at once
+- **2025-01-17**: Added proper icons and improved UI boxes for better user experience
 
 ## Project Architecture
 
@@ -78,6 +83,11 @@ A comprehensive pharmaceutical laboratory information management system (LIMS) f
 - Icon-only sidebar navigation with tooltips on hover
 - AI chatbot integration for help and support instead of dedicated page
 - Floating UI elements for better user experience
+- In-row search and filter layout matching reference design
+- No breadcrumbs (Dashboard > page name) on any pages
+- Minimal left and right spacing throughout the application
+- Selective filter display instead of showing all filters simultaneously
+- Proper icons and well-designed UI boxes for better usability
 
 ## File Structure
 ```

@@ -169,56 +169,115 @@ export const WorkflowManager: React.FC = () => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-gray-25">
+    <div className="min-h-screen bg-gray-50">
       {currentView === 'list' ? (
         <>
-          {/* Header */}
-          <div className="bg-white border-b border-gray-200 px-8 py-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-heading text-gray-900">Workflow Management</h1>
-                <p className="text-body text-gray-600 mt-1">Create and manage approval workflows</p>
-              </div>
+          {/* Page Header */}
+          <PageHeader
+            title="Workflow Management"
+            subtitle="Design and manage automated workflows"
+            icon={GitBranch}
+            actions={
               <button
                 onClick={handleCreateWorkflow}
-                className="btn-primary inline-flex items-center space-x-2"
+                className="px-3 py-1.5 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors flex items-center space-x-2"
               >
-                <Plus className="h-5 w-5" />
+                <Plus className="h-4 w-4" />
                 <span>Create Workflow</span>
               </button>
-            </div>
-          </div>
+            }
+          />
 
-          {/* Workflow List */}
-          <div className="flex-1 px-8 py-6 overflow-auto">
-            <WorkflowList
-              workflows={workflows}
-              onEditWorkflow={handleEditWorkflow}
-              onDeleteWorkflow={handleDeleteWorkflow}
-              onOpenWorkflow={handleOpenWorkflow}
+          <div className="mx-auto px-6 py-8">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <StatsCard
+                title="Total Workflows"
+                value={totalWorkflows}
+                icon={GitBranch}
+                color="blue"
+              />
+              <StatsCard
+                title="Active Workflows"
+                value={activeWorkflows.length}
+                icon={Play}
+                color="green"
+              />
+              <StatsCard
+                title="Draft Workflows"
+                value={draftWorkflows.length}
+                icon={Pause}
+                color="yellow"
+              />
+              <StatsCard
+                title="Categories"
+                value={new Set(workflows.map(w => w.category)).size}
+                icon={CheckCircle}
+                color="blue"
+              />
+            </div>
+
+            {/* Unified Search and Filter */}
+            <UnifiedSearchFilter
+              searchValue={searchValue}
+              onSearchChange={setSearchValue}
+              filters={unifiedFilters}
+              onFilterChange={handleFilterChange}
+              onClearAll={handleClearAll}
+              sortOptions={[
+                { value: 'name', label: 'Name' },
+                { value: 'status', label: 'Status' },
+                { value: 'category', label: 'Category' },
+                { value: 'created', label: 'Created Date' }
+              ]}
+              sortValue={sortValue}
+              onSortChange={setSortValue}
+              groupOptions={[
+                { value: 'none', label: 'None' },
+                { value: 'status', label: 'Status' },
+                { value: 'category', label: 'Category' }
+              ]}
+              groupValue={groupValue}
+              onGroupChange={setGroupValue}
+              dateFilter={{
+                value: dateFilter,
+                onChange: setDateFilter
+              }}
             />
+
+            {/* Workflow List */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+              <WorkflowList
+                workflows={workflows}
+                onEditWorkflow={handleEditWorkflow}
+                onDeleteWorkflow={handleDeleteWorkflow}
+                onOpenWorkflow={handleOpenWorkflow}
+              />
+            </div>
           </div>
         </>
       ) : (
         <>
           {/* Builder Header */}
-          <div className="bg-white border-b border-gray-200 px-8 py-6">
-            <div className="flex items-center space-x-6">
-              <button
-                onClick={() => setCurrentView('list')}
-                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors p-2 -m-2 rounded-lg hover:bg-gray-50"
-              >
-                <ArrowLeft className="h-5 w-5" />
-                <span className="font-medium">Back to Workflows</span>
-              </button>
-              <div className="h-6 w-px bg-gray-300" />
-              <div>
-                <h1 className="text-subheading text-gray-900">
-                  {selectedWorkflow ? selectedWorkflow.name : 'New Workflow'}
-                </h1>
-                <p className="text-caption">
-                  {selectedWorkflow ? 'Edit workflow' : 'Create new workflow'}
-                </p>
+          <div className="bg-white border-b border-gray-200">
+            <div className="mx-auto px-6 py-4">
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={() => setCurrentView('list')}
+                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors p-2 -m-2 rounded-lg hover:bg-gray-50"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  <span className="font-medium">Back to Workflows</span>
+                </button>
+                <div className="h-5 w-px bg-gray-300" />
+                <div>
+                  <h1 className="text-lg font-semibold text-gray-900">
+                    {selectedWorkflow ? selectedWorkflow.name : 'New Workflow'}
+                  </h1>
+                  <p className="text-sm text-gray-600">
+                    {selectedWorkflow ? 'Edit workflow' : 'Create new workflow'}
+                  </p>
+                </div>
               </div>
             </div>
           </div>

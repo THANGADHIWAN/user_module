@@ -221,10 +221,6 @@ export const UserManagement: React.FC = () => {
         title="User Management"
         subtitle="Manage user accounts, roles, and permissions"
         icon={Users}
-        breadcrumbs={[
-          { label: 'Dashboard', href: '/' },
-          { label: 'User Management' }
-        ]}
         actions={
           <>
             <button
@@ -244,7 +240,7 @@ export const UserManagement: React.FC = () => {
         }
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mx-auto px-6 py-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatsCard
