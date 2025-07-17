@@ -6,8 +6,8 @@ import { WorkflowManager } from './components/workflow/WorkflowManager';
 import { DigitalSignatures } from './components/DigitalSignatures';
 import { Notifications } from './components/Notifications';
 import { SystemSettings } from './components/SystemSettings';
-import { HelpSupport } from './components/HelpSupport';
 import { CustomFields } from './components/CustomFields';
+import { AIChatbot } from './components/AIChatbot';
 
 function App() {
   const [activeModule, setActiveModule] = useState('users');
@@ -30,8 +30,6 @@ function App() {
         return <CustomFields />;
       case 'settings':
         return <SystemSettings />;
-      case 'help':
-        return <HelpSupport />;
       default:
         return <UserManagement />;
     }
@@ -47,6 +45,7 @@ function App() {
           </div>
         </main>
       </div>
+      <AIChatbot />
     </div>
   );
 }

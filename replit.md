@@ -8,6 +8,9 @@ A comprehensive pharmaceutical laboratory information management system (LIMS) f
 - **2025-01-17**: Implemented production-ready styling with modern design system
 - **2025-01-17**: Enhanced UI/UX with improved typography, spacing, and visual hierarchy
 - **2025-01-17**: Added comprehensive CSS system with design tokens and utility classes
+- **2025-01-17**: Redesigned sidebar to icon-only with tooltips on hover
+- **2025-01-17**: Added AI chatbot for help and support with floating interface
+- **2025-01-17**: Removed Help & Support from main navigation menu
 
 ## Project Architecture
 
@@ -48,6 +51,12 @@ A comprehensive pharmaceutical laboratory information management system (LIMS) f
    - User role administration
    - System monitoring and logs
 
+5. **AI Assistant**
+   - Floating chatbot interface for help and support
+   - Context-aware responses about system features
+   - Minimizable and expandable chat window
+   - Pulse animation to draw user attention
+
 ### Design System
 - **Colors**: Professional blue and gray palette with semantic color tokens
 - **Typography**: Inter font with custom scale and line heights
@@ -66,6 +75,9 @@ A comprehensive pharmaceutical laboratory information management system (LIMS) f
 - Modern, clean interface with professional appearance
 - Consistent design language throughout the application
 - Accessibility-focused design with proper focus states
+- Icon-only sidebar navigation with tooltips on hover
+- AI chatbot integration for help and support instead of dedicated page
+- Floating UI elements for better user experience
 
 ## File Structure
 ```
