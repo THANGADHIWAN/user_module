@@ -122,6 +122,17 @@ export const WorkflowManager: React.FC = () => {
   const [sortValue, setSortValue] = useState('name');
   const [groupValue, setGroupValue] = useState('none');
   const [dateFilter, setDateFilter] = useState('All');
+  
+  // Filter state
+  const [filters, setFilters] = useState({
+    status: 'All',
+    category: 'All'
+  });
+
+  // Calculate stats
+  const activeWorkflows = workflows.filter(w => w.status === 'Active');
+  const draftWorkflows = workflows.filter(w => w.status === 'Draft');
+  const totalWorkflows = workflows.length;
 
   const handleCreateWorkflow = () => {
     setSelectedWorkflow(null);
@@ -167,6 +178,87 @@ export const WorkflowManager: React.FC = () => {
   const handleDeleteWorkflow = (workflowId: string) => {
     setWorkflows(prev => prev.filter(w => w.id !== workflowId));
   };
+
+  // Unified filters
+  const unifiedFilters = {
+    status: {
+      value: filters.status,
+      options: [
+        { value: 'All', label: 'All Status' },
+        { value: 'Active', label: 'Active' },
+        { value: 'Draft', label: 'Draft' },
+        { value: 'Inactive', label: 'Inactive' }
+      ],
+      label: 'Status'
+    },
+    category: {
+      value: filters.category,
+      options: [
+        { value: 'All', label: 'All Categories' },
+        { value: 'Document Review', label: 'Document Review' },
+        { value: 'Quality Control', label: 'Quality Control' },
+        { value: 'Approval Process', label: 'Approval Process' },
+        { value: 'Data Management', label: 'Data Management' },
+        { value: 'Sample Testing', label: 'Sample Testing' },
+        { value: 'Equipment Qualification', label: 'Equipment Qualification' }
+      ],
+      label: 'Category'
+    }
+  };
+
+  const handleFilterChange = (filterKey: string, value: string) => {
+    setFilters(prev => ({ ...prev, [filterKey]: value }));
+  };
+
+  const handleClearAll = () => {
+    setSearchValue('');
+    setSortValue('name');
+    setGroupValue('none');
+    setDateFilter('All');
+    setFilters({
+      status: 'All',
+      category: 'All'
+    });
+  };
+
+  // Apply filters and search
+  const filteredWorkflows = workflows.filter(workflow => {
+    const matchesSearch = searchValue === '' || 
+      workflow.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+      workflow.description.toLowerCase().includes(searchValue.toLowerCase()) ||
+      workflow.category.toLowerCase().includes(searchValue.toLowerCase());
+    
+    const matchesStatus = filters.status === 'All' || workflow.status === filters.status;
+    const matchesCategory = filters.category === 'All' || workflow.category === filters.category;
+    
+    return matchesSearch && matchesStatus && matchesCategory;
+  });
+
+  // Apply sorting
+  const sortedWorkflows = [...filteredWorkflows].sort((a, b) => {
+    switch (sortValue) {
+      case 'name':
+        return a.name.localeCompare(b.name);
+      case 'status':
+        return a.status.localeCompare(b.status);
+      case 'category':
+        return a.category.localeCompare(b.category);
+      case 'created':
+        return new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime();
+      default:
+        return 0;
+    }
+  });
+
+  // Apply grouping
+  const groupedWorkflows = groupValue === 'none' ? 
+    { 'All Workflows': sortedWorkflows } : 
+    sortedWorkflows.reduce((groups, workflow) => {
+      const key = workflow[groupValue as keyof typeof workflow] as string;
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(workflow);
+      return groups;
+    }, {} as Record<string, typeof sortedWorkflows>);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -248,7 +340,7 @@ export const WorkflowManager: React.FC = () => {
             {/* Workflow List */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200">
               <WorkflowList
-                workflows={workflows}
+                workflows={sortedWorkflows}
                 onEditWorkflow={handleEditWorkflow}
                 onDeleteWorkflow={handleDeleteWorkflow}
                 onOpenWorkflow={handleOpenWorkflow}

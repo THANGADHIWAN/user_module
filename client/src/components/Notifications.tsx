@@ -185,11 +185,7 @@ export const Notifications: React.FC = () => {
     setNotifications(prev => prev.filter(notif => notif.id !== id));
   };
 
-  const filteredNotifications = notifications.filter(notif => {
-    const matchesSearch = notif.title.toLowerCase().includes(searchValue.toLowerCase()) ||
-                         notif.message.toLowerCase().includes(searchValue.toLowerCase());
-    return matchesSearch;
-  });
+
 
   const unreadCount = notifications.filter(n => !n.read).length;
   const totalNotifications = notifications.length;
@@ -242,8 +238,16 @@ export const Notifications: React.FC = () => {
     }
   };
 
+  // Filter state
+  const [filters, setFilters] = useState({
+    category: 'All',
+    type: 'All',
+    priority: 'All',
+    status: 'All'
+  });
+
   const handleFilterChange = (filterKey: string, value: string) => {
-    // Filter change logic
+    setFilters(prev => ({ ...prev, [filterKey]: value }));
   };
 
   const handleClearAll = () => {
@@ -251,7 +255,80 @@ export const Notifications: React.FC = () => {
     setSortValue('timestamp');
     setGroupValue('none');
     setDateFilter('All');
+    setFilters({
+      category: 'All',
+      type: 'All',
+      priority: 'All',
+      status: 'All'
+    });
   };
+
+  // Update unified filters to use filter state
+  const updatedUnifiedFilters = {
+    category: {
+      value: filters.category,
+      options: unifiedFilters.category.options,
+      label: 'Category'
+    },
+    type: {
+      value: filters.type,
+      options: unifiedFilters.type.options,
+      label: 'Type'
+    },
+    priority: {
+      value: filters.priority,
+      options: unifiedFilters.priority.options,
+      label: 'Priority'
+    },
+    status: {
+      value: filters.status,
+      options: unifiedFilters.status.options,
+      label: 'Status'
+    }
+  };
+
+  // Apply filters and search
+  const filteredNotifications = notifications.filter(notification => {
+    const matchesSearch = searchValue === '' || 
+      notification.title.toLowerCase().includes(searchValue.toLowerCase()) ||
+      notification.message.toLowerCase().includes(searchValue.toLowerCase());
+    
+    const matchesCategory = filters.category === 'All' || notification.category === filters.category;
+    const matchesType = filters.type === 'All' || notification.type === filters.type;
+    const matchesPriority = filters.priority === 'All' || notification.priority === filters.priority;
+    const matchesStatus = filters.status === 'All' || 
+      (filters.status === 'Read' && notification.read) ||
+      (filters.status === 'Unread' && !notification.read);
+    
+    return matchesSearch && matchesCategory && matchesType && matchesPriority && matchesStatus;
+  });
+
+  // Apply sorting
+  const sortedNotifications = [...filteredNotifications].sort((a, b) => {
+    switch (sortValue) {
+      case 'timestamp':
+        return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+      case 'title':
+        return a.title.localeCompare(b.title);
+      case 'priority':
+        const priorityOrder = { 'high': 3, 'medium': 2, 'low': 1 };
+        return priorityOrder[b.priority] - priorityOrder[a.priority];
+      case 'category':
+        return a.category.localeCompare(b.category);
+      default:
+        return 0;
+    }
+  });
+
+  // Apply grouping
+  const groupedNotifications = groupValue === 'none' ? 
+    { 'All Notifications': sortedNotifications } : 
+    sortedNotifications.reduce((groups, notification) => {
+      const key = notification[groupValue as keyof typeof notification] as string;
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(notification);
+      return groups;
+    }, {} as Record<string, typeof sortedNotifications>);
 
   const tabs = [
     { id: 'notifications', label: 'Notifications', icon: Bell },
@@ -303,6 +380,124 @@ export const Notifications: React.FC = () => {
       </div>
 
       <div className="mx-auto px-6 py-8">
+        {activeTab === 'notifications' && (
+          <div className="space-y-6">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <StatsCard
+                title="Total Notifications"
+                value={totalNotifications}
+                icon={Bell}
+                color="blue"
+              />
+              <StatsCard
+                title="Unread"
+                value={unreadCount}
+                icon={AlertTriangle}
+                color="yellow"
+              />
+              <StatsCard
+                title="High Priority"
+                value={highPriorityCount}
+                icon={CheckCircle}
+                color="red"
+              />
+              <StatsCard
+                title="Action Required"
+                value={actionRequiredCount}
+                icon={User}
+                color="orange"
+              />
+            </div>
+
+            {/* Unified Search and Filter */}
+            <UnifiedSearchFilter
+              searchValue={searchValue}
+              onSearchChange={setSearchValue}
+              filters={updatedUnifiedFilters}
+              onFilterChange={handleFilterChange}
+              onClearAll={handleClearAll}
+              sortOptions={[
+                { value: 'timestamp', label: 'Date' },
+                { value: 'title', label: 'Title' },
+                { value: 'priority', label: 'Priority' },
+                { value: 'category', label: 'Category' }
+              ]}
+              sortValue={sortValue}
+              onSortChange={setSortValue}
+              groupOptions={[
+                { value: 'none', label: 'None' },
+                { value: 'category', label: 'Category' },
+                { value: 'priority', label: 'Priority' },
+                { value: 'type', label: 'Type' }
+              ]}
+              groupValue={groupValue}
+              onGroupChange={setGroupValue}
+              dateFilter={{
+                value: dateFilter,
+                onChange: setDateFilter
+              }}
+            />
+
+            {/* Notifications List */}
+            <div className="space-y-4">
+              {Object.entries(groupedNotifications).map(([groupName, groupNotifications]) => (
+                <div key={groupName}>
+                  {groupValue !== 'none' && (
+                    <div className="bg-gray-100 px-4 py-2 rounded-t-lg border-b border-gray-200">
+                      <h3 className="text-sm font-medium text-gray-900">{groupName} ({groupNotifications.length})</h3>
+                    </div>
+                  )}
+                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 divide-y divide-gray-200">
+                    {groupNotifications.map((notification) => (
+                      <div key={notification.id} className="p-4 hover:bg-gray-50 transition-colors">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center space-x-3 mb-2">
+                              {getNotificationIcon(notification.type)}
+                              <h4 className="text-sm font-medium text-gray-900">{notification.title}</h4>
+                              <span className={getPriorityBadge(notification.priority)}>
+                                {notification.priority.charAt(0).toUpperCase() + notification.priority.slice(1)}
+                              </span>
+                              {!notification.read && (
+                                <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                              )}
+                            </div>
+                            <p className="text-sm text-gray-600 mb-2">{notification.message}</p>
+                            <div className="flex items-center space-x-4 text-xs text-gray-500">
+                              <span>{notification.category}</span>
+                              <span>{new Date(notification.timestamp).toLocaleDateString()}</span>
+                              {notification.actionRequired && (
+                                <span className="text-red-600 font-medium">Action Required</span>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-2 ml-4">
+                            {!notification.read && (
+                              <button
+                                onClick={() => markAsRead(notification.id)}
+                                className="text-blue-600 hover:text-blue-800 text-sm"
+                              >
+                                Mark as Read
+                              </button>
+                            )}
+                            <button
+                              onClick={() => deleteNotification(notification.id)}
+                              className="text-red-600 hover:text-red-800"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {activeTab === 'templates' && (
           <div className="space-y-6">
             {/* Templates Header */}

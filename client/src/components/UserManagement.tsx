@@ -193,6 +193,49 @@ export const UserManagement: React.FC = () => {
     });
   };
 
+  // Apply filters and search
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = searchValue === '' || 
+      user.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+      user.role.toLowerCase().includes(searchValue.toLowerCase()) ||
+      (user.department && user.department.toLowerCase().includes(searchValue.toLowerCase()));
+    
+    const matchesStatus = filters.status === 'All' || user.status === filters.status;
+    const matchesRole = filters.role === 'All' || user.role === filters.role;
+    const matchesDepartment = filters.department === 'All' || user.department === filters.department;
+    
+    return matchesSearch && matchesStatus && matchesRole && matchesDepartment;
+  });
+
+  // Apply sorting
+  const sortedUsers = [...filteredUsers].sort((a, b) => {
+    switch (sortValue) {
+      case 'name':
+        return a.name.localeCompare(b.name);
+      case 'email':
+        return a.email.localeCompare(b.email);
+      case 'role':
+        return a.role.localeCompare(b.role);
+      case 'department':
+        return a.department.localeCompare(b.department);
+      case 'lastLogin':
+        return new Date(b.lastLogin).getTime() - new Date(a.lastLogin).getTime();
+      default:
+        return 0;
+    }
+  });
+
+  // Apply grouping
+  const groupedUsers = groupValue === 'none' ? 
+    { 'All Users': sortedUsers } : 
+    sortedUsers.reduce((groups, user) => {
+      const key = user[groupValue as keyof typeof user] as string;
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(user);
+      return groups;
+    }, {} as Record<string, typeof sortedUsers>);
+
   const handleExport = () => {
     exportToCSV();
   };
