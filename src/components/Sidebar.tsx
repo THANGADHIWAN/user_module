@@ -6,9 +6,7 @@ import {
   Settings, 
   Bell,
   HelpCircle,
-  Sliders,
-  BarChart3,
-  Database
+  Sliders
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -22,8 +20,6 @@ const menuItems = [
   { id: 'signatures', label: 'Digital Signatures', icon: FileSignature },
   { id: 'notifications', label: 'Notifications', icon: Bell },
   { id: 'custom-fields', label: 'Custom Fields', icon: Sliders },
-  { id: 'data-management', label: 'Data Management', icon: Database },
-  { id: 'reports', label: 'Reports & Analytics', icon: BarChart3 },
   { id: 'settings', label: 'System Settings', icon: Settings },
   { id: 'help', label: 'Help & Support', icon: HelpCircle },
 ];

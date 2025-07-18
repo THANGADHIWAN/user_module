@@ -39,6 +39,8 @@ This is a comprehensive pharmaceutical Laboratory Information Management System 
 - Enhanced sidebar with complete icon set and improved tooltip system for all modules
 - Fixed User Management table scrolling with proper height constraints and sticky headers
 - Implemented comprehensive pagination system with page navigation controls
+- Streamlined sidebar navigation by removing Data Management and Reports & Analytics modules
+- Simplified template view modal by removing edit and close buttons
 
 ## User Preferences
 - None specified yet
