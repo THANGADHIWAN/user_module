@@ -51,22 +51,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeModule, onModuleChange }
               <li key={item.id} className="relative">
                 <button
                   onClick={() => onModuleChange(item.id)}
-                  className={`w-full flex items-center justify-center group-hover:justify-start px-3 py-3 rounded-lg text-left transition-colors relative group/button ${
+                  className={`sidebar-button w-full flex items-center justify-center group-hover:justify-start px-3 py-3 rounded-lg text-left transition-colors relative ${
                     isActive
                       ? 'bg-blue-50 text-blue-700'
                       : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                   }`}
+                  title={item.label}
                 >
                   <Icon className={`h-5 w-5 ${isActive ? 'text-blue-600' : 'text-gray-400'}`} />
                   <span className="ml-3 font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap overflow-hidden">
                     {item.label}
                   </span>
-                  
-                  {/* Tooltip for collapsed state */}
-                  <div className="absolute left-full ml-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-md opacity-0 pointer-events-none group/button:hover:opacity-100 group-hover:opacity-0 transition-opacity duration-200 whitespace-nowrap z-50 shadow-lg">
-                    {item.label}
-                    <div className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-900 rotate-45"></div>
-                  </div>
                 </button>
               </li>
             );
