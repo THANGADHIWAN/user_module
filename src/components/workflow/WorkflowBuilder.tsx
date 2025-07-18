@@ -43,8 +43,8 @@ interface HistoryState {
 }
 
 export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ workflow, onSave }) => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(workflow?.nodes || initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(workflow?.edges || initialEdges);
+  const [nodes, setNodes, onNodesChangeBase] = useNodesState(workflow?.nodes || initialNodes);
+  const [edges, setEdges, onEdgesChangeBase] = useEdgesState(workflow?.edges || initialEdges);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [showPropertiesPanel, setShowPropertiesPanel] = useState(false);
   
@@ -98,34 +98,23 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ workflow, onSa
     [setEdges, edges, nodes, saveToHistory]
   );
 
-  const onEdgesChange = useCallback(
-    (changes: any) => {
-      const newEdges = edges.filter((edge, index) => {
-        const change = changes.find((c: any) => c.id === edge.id);
-        return !change || change.type !== 'remove';
-      });
-      setEdges(newEdges);
-      saveToHistory(nodes, newEdges);
-    },
-    [edges, setEdges, nodes, saveToHistory]
-  );
-
+  // Wrap the base handlers to add history logic
   const onNodesChange = useCallback(
     (changes: any) => {
-      const newNodes = nodes.filter((node, index) => {
-        const change = changes.find((c: any) => c.id === node.id);
-        return !change || change.type !== 'remove';
-      }).map((node) => {
-        const change = changes.find((c: any) => c.id === node.id);
-        if (change && change.type === 'position' && change.position) {
-          return { ...node, position: change.position };
-        }
-        return node;
-      });
-      setNodes(newNodes);
-      saveToHistory(newNodes, edges);
+      onNodesChangeBase(changes);
+      // After updating nodes, save to history
+      setTimeout(() => saveToHistory([...nodes], [...edges]), 0);
     },
-    [nodes, setNodes, edges, saveToHistory]
+    [onNodesChangeBase, nodes, edges, saveToHistory]
+  );
+
+  const onEdgesChange = useCallback(
+    (changes: any) => {
+      onEdgesChangeBase(changes);
+      // After updating edges, save to history
+      setTimeout(() => saveToHistory([...nodes], [...edges]), 0);
+    },
+    [onEdgesChangeBase, nodes, edges, saveToHistory]
   );
 
   const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
