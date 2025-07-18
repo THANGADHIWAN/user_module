@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { WorkflowBuilder } from './WorkflowBuilder';
 import { WorkflowList } from './WorkflowList';
 import { Workflow, WorkflowCategory } from '../../types/workflow';
-import { Plus, ArrowLeft } from 'lucide-react';
+import { Plus, ArrowLeft, Search, Filter } from 'lucide-react';
 
 const sampleWorkflows: Workflow[] = [
   {
@@ -113,6 +113,9 @@ export const WorkflowManager: React.FC = () => {
   const [workflows, setWorkflows] = useState<Workflow[]>(sampleWorkflows);
   const [currentView, setCurrentView] = useState<'list' | 'builder'>('list');
   const [selectedWorkflow, setSelectedWorkflow] = useState<Workflow | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
 
   const handleCreateWorkflow = () => {
     setSelectedWorkflow(null);
@@ -185,6 +188,27 @@ export const WorkflowManager: React.FC = () => {
     setWorkflows(prev => [...prev, clonedWorkflow]);
   };
 
+  // Filter workflows based on search and filters
+  const filteredWorkflows = useMemo(() => {
+    return workflows.filter(workflow => {
+      const matchesSearch = searchQuery === '' || 
+        workflow.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        workflow.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        workflow.category.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      const matchesStatus = statusFilter === 'all' || workflow.status === statusFilter;
+      const matchesCategory = categoryFilter === 'all' || workflow.category === categoryFilter;
+      
+      return matchesSearch && matchesStatus && matchesCategory;
+    });
+  }, [workflows, searchQuery, statusFilter, categoryFilter]);
+
+  // Get unique categories for filter
+  const categories = useMemo(() => {
+    const uniqueCategories = Array.from(new Set(workflows.map(w => w.category)));
+    return uniqueCategories.sort();
+  }, [workflows]);
+
   return (
     <div className="h-full flex flex-col">
       {currentView === 'list' ? (
@@ -204,10 +228,66 @@ export const WorkflowManager: React.FC = () => {
             </button>
           </div>
 
+          {/* Search and Filters */}
+          <div className="p-4 bg-gray-50 border-b border-gray-200">
+            <div className="flex flex-col sm:flex-row gap-4">
+              {/* Search */}
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <input
+                  type="text"
+                  placeholder="Search workflows by name, description, or category..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              {/* Status Filter */}
+              <div className="flex items-center space-x-2">
+                <Filter className="h-4 w-4 text-gray-400" />
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="all">All Status</option>
+                  <option value="Active">Active</option>
+                  <option value="Draft">Draft</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+              </div>
+
+              {/* Category Filter */}
+              <div>
+                <select
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="all">All Categories</option>
+                  {categories.map(category => (
+                    <option key={category} value={category}>{category}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Results summary */}
+            <div className="mt-3 text-sm text-gray-600">
+              Showing {filteredWorkflows.length} of {workflows.length} workflows
+              {searchQuery && (
+                <span className="ml-2">
+                  for "<span className="font-medium">{searchQuery}</span>"
+                </span>
+              )}
+            </div>
+          </div>
+
           {/* Workflow List */}
           <div className="flex-1 p-4">
             <WorkflowList
-              workflows={workflows}
+              workflows={filteredWorkflows}
               onEditWorkflow={handleEditWorkflow}
               onDeleteWorkflow={handleDeleteWorkflow}
               onOpenWorkflow={handleOpenWorkflow}

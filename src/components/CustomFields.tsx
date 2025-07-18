@@ -230,6 +230,7 @@ export const CustomFields: React.FC = () => {
   const [editingField, setEditingField] = useState<CustomField | null>(null);
   const [draggingField, setDraggingField] = useState<string | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [searchQuery, setSearchQuery] = useState('');
   const [formData, setFormData] = useState<Partial<CustomField>>({
     type: 'text',
     required: false,
@@ -241,9 +242,15 @@ export const CustomFields: React.FC = () => {
 
   const canvasRef = useRef<HTMLDivElement>(null);
 
-  const filteredPages = selectedModule === 'All' 
-    ? pages 
-    : pages.filter(page => page.module === selectedModule);
+  const filteredPages = pages.filter(page => {
+    const matchesModule = selectedModule === 'All' || page.module === selectedModule;
+    const matchesSearch = searchQuery === '' || 
+      page.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      page.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      page.module.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    return matchesModule && matchesSearch;
+  });
 
   const getFieldTypeInfo = (type: string) => {
     return fieldTypes.find(ft => ft.type === type) || fieldTypes[0];
@@ -706,20 +713,45 @@ export const CustomFields: React.FC = () => {
             </div>
           </div>
 
-          {/* Module Filter */}
-          <div className="p-4 border-b border-gray-200">
-            <div className="flex items-center space-x-4">
-              <label className="text-sm font-medium text-gray-700">Filter by Module:</label>
-              <select
-                value={selectedModule}
-                onChange={(e) => setSelectedModule(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="All">All Modules</option>
-                {modules.map(module => (
-                  <option key={module} value={module}>{module}</option>
-                ))}
-              </select>
+          {/* Search and Filters */}
+          <div className="p-4 bg-gray-50 border-b border-gray-200">
+            <div className="flex flex-col sm:flex-row gap-4">
+              {/* Search */}
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <input
+                  type="text"
+                  placeholder="Search pages by name, description, or module..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              {/* Module Filter */}
+              <div className="flex items-center space-x-2">
+                <label className="text-sm font-medium text-gray-700">Module:</label>
+                <select
+                  value={selectedModule}
+                  onChange={(e) => setSelectedModule(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="All">All Modules</option>
+                  {modules.map(module => (
+                    <option key={module} value={module}>{module}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Results summary */}
+            <div className="mt-3 text-sm text-gray-600">
+              Showing {filteredPages.length} of {pages.length} pages
+              {searchQuery && (
+                <span className="ml-2">
+                  for "<span className="font-medium">{searchQuery}</span>"
+                </span>
+              )}
             </div>
           </div>
 

@@ -26,18 +26,18 @@ const menuItems = [
 
 export const Sidebar: React.FC<SidebarProps> = ({ activeModule, onModuleChange }) => {
   return (
-    <div className="w-16 bg-white shadow-lg h-full flex flex-col group hover:w-64 transition-all duration-300 ease-in-out">
+    <div className="w-64 bg-white shadow-lg h-full flex flex-col">
       {/* Logo */}
-      <div className="p-4 border-b border-gray-200 flex items-center justify-center group-hover:justify-start group-hover:px-6">
+      <div className="p-4 border-b border-gray-200 flex items-center">
         <FileSignature className="h-8 w-8 text-blue-600" />
-        <div className="ml-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 overflow-hidden">
-          <h1 className="text-xl font-bold text-gray-900 whitespace-nowrap">Pharma LIMS</h1>
-          <p className="text-sm text-gray-500 whitespace-nowrap">Management Console</p>
+        <div className="ml-3">
+          <h1 className="text-xl font-bold text-gray-900">Pharma LIMS</h1>
+          <p className="text-sm text-gray-500">Management Console</p>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-2 group-hover:p-4">
+      <nav className="flex-1 p-4">
         <ul className="space-y-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
@@ -47,17 +47,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeModule, onModuleChange }
               <li key={item.id} className="relative">
                 <button
                   onClick={() => onModuleChange(item.id)}
-                  className={`sidebar-button w-full flex items-center justify-center group-hover:justify-start px-3 py-3 rounded-lg text-left transition-colors relative ${
+                  className={`w-full flex items-center px-3 py-3 rounded-lg text-left transition-colors ${
                     isActive
                       ? 'bg-blue-50 text-blue-700'
                       : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                   }`}
-                  title={item.label}
                 >
-                  <Icon className={`h-5 w-5 ${isActive ? 'text-blue-600' : 'text-gray-400'}`} />
-                  <span className="ml-3 font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap overflow-hidden">
-                    {item.label}
-                  </span>
+                  <Icon className={`h-5 w-5 mr-3 ${isActive ? 'text-blue-600' : 'text-gray-400'}`} />
+                  <span className="font-medium">{item.label}</span>
                 </button>
               </li>
             );
