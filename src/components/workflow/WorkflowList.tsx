@@ -19,13 +19,17 @@ interface WorkflowListProps {
   onEditWorkflow: (workflow: Workflow) => void;
   onDeleteWorkflow: (workflowId: string) => void;
   onOpenWorkflow: (workflow: Workflow) => void;
+  onToggleStatus: (workflowId: string) => void;
+  onCloneWorkflow: (workflow: Workflow) => void;
 }
 
 export const WorkflowList: React.FC<WorkflowListProps> = ({
   workflows,
   onEditWorkflow,
   onDeleteWorkflow,
-  onOpenWorkflow
+  onOpenWorkflow,
+  onToggleStatus,
+  onCloneWorkflow
 }) => {
   const [filterCategory, setFilterCategory] = useState<WorkflowCategory | 'All'>('All');
   const [filterStatus, setFilterStatus] = useState<'All' | 'Active' | 'Draft' | 'Inactive'>('All');
@@ -162,7 +166,10 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({
                     <span>Edit</span>
                   </button>
                   <button 
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onCloneWorkflow(workflow);
+                    }}
                     className="flex items-center space-x-1 px-3 py-1 text-sm text-gray-600 hover:bg-gray-50 rounded-md"
                   >
                     <Copy className="h-3 w-3" />
@@ -172,15 +179,23 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({
                 <div className="flex items-center space-x-1">
                   {workflow.status === 'Active' ? (
                     <button 
-                      onClick={(e) => e.stopPropagation()}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleStatus(workflow.id);
+                      }}
                       className="p-1 text-orange-600 hover:bg-orange-50 rounded"
+                      title="Pause Workflow"
                     >
                       <Pause className="h-4 w-4" />
                     </button>
                   ) : (
                     <button 
-                      onClick={(e) => e.stopPropagation()}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleStatus(workflow.id);
+                      }}
                       className="p-1 text-green-600 hover:bg-green-50 rounded"
+                      title="Activate Workflow"
                     >
                       <Play className="h-4 w-4" />
                     </button>

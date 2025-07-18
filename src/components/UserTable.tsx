@@ -77,9 +77,9 @@ export const UserTable: React.FC<UserTableProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden flex flex-col">
+    <div className="bg-white rounded-lg shadow overflow-hidden flex flex-col h-full">
       {/* Table Header with Pagination Info */}
-      <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+      <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-white">
         <div className="text-sm text-gray-700">
           Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} users
         </div>
@@ -100,65 +100,66 @@ export const UserTable: React.FC<UserTableProps> = ({
       </div>
 
       {/* Scrollable Table Container */}
-      <div className="flex-1 overflow-auto max-h-96">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th scope="col" className="px-6 py-3 text-left">
-                <input
-                  type="checkbox"
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  checked={selectedUsers.size === users.length && users.length > 0}
-                  onChange={onSelectAll}
-                />
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => onSort('name')}
-              >
-                User Name {getSortIcon('name')}
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => onSort('role')}
-              >
-                Role {getSortIcon('role')}
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => onSort('status')}
-              >
-                Status {getSortIcon('status')}
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => onSort('lastLogin')}
-              >
-                Last Login {getSortIcon('lastLogin')}
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => onSort('digitalSignatureStatus')}
-              >
-                Digital Signature {getSortIcon('digitalSignatureStatus')}
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => onSort('createdDate')}
-              >
-                Created Date {getSortIcon('createdDate')}
-              </th>
-              <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
+      <div className="flex-1 overflow-hidden">
+        <div className="overflow-auto h-full">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50 sticky top-0 z-10">
+              <tr>
+                <th scope="col" className="px-6 py-3 text-left bg-gray-50">
+                  <input
+                    type="checkbox"
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    checked={selectedUsers.size === users.length && users.length > 0}
+                    onChange={onSelectAll}
+                  />
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0"
+                  onClick={() => onSort('name')}
+                >
+                  User Name {getSortIcon('name')}
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0"
+                  onClick={() => onSort('role')}
+                >
+                  Role {getSortIcon('role')}
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0"
+                  onClick={() => onSort('status')}
+                >
+                  Status {getSortIcon('status')}
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0"
+                  onClick={() => onSort('lastLogin')}
+                >
+                  Last Login {getSortIcon('lastLogin')}
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0"
+                  onClick={() => onSort('digitalSignatureStatus')}
+                >
+                  Digital Signature {getSortIcon('digitalSignatureStatus')}
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0"
+                  onClick={() => onSort('createdDate')}
+                >
+                  Created Date {getSortIcon('createdDate')}
+                </th>
+                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50 sticky top-0">
+                  Actions
+                </th>
+              </tr>
+            </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {users.map((user) => (
               <tr key={user.id} className="hover:bg-gray-50">
@@ -232,10 +233,11 @@ export const UserTable: React.FC<UserTableProps> = ({
               </tr>
             ))}
           </tbody>
-        </table>
+          </table>
+        </div>
       </div>
 
-      {/* Pagination Controls */}
+      {/* Fixed Pagination Controls */}
       <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <button

@@ -22,13 +22,15 @@ This is a comprehensive pharmaceutical Laboratory Information Management System 
 ## Recent Changes
 - **2025-07-18**: Successfully migrated from Replit Agent to standard Replit environment
 - Updated server configuration to use 0.0.0.0:5000 for Replit compatibility
-- Configured proper development workflow
+- Configured proper development workflow and installed missing dependencies
 - **2025-07-18**: Enhanced UI/UX with proper confirmation modals
-- Optimized sidebar to icon-only design with hover tooltips
+- Optimized sidebar to icon-only design with hover tooltips and smooth animations
 - Replaced all browser alerts/confirms with proper modal components
-- Fixed workflow pause/activate/delete functionality with confirmations
-- Enhanced digital signature sign button functionality
-- Improved notification template management
+- Fixed workflow pause/activate/delete functionality with proper state management
+- Implemented workflow cloning feature with proper data handling
+- Enhanced digital signature functionality with working save and template creation
+- Fixed user table with sticky headers, proper scrolling, and fixed pagination
+- Improved notification template management with full CRUD operations
 
 ## User Preferences
 - None specified yet

@@ -159,6 +159,32 @@ export const WorkflowManager: React.FC = () => {
     setWorkflows(prev => prev.filter(w => w.id !== workflowId));
   };
 
+  const handleToggleWorkflowStatus = (workflowId: string) => {
+    setWorkflows(prev => prev.map(workflow => 
+      workflow.id === workflowId 
+        ? { 
+            ...workflow, 
+            status: workflow.status === 'Active' ? 'Inactive' : 'Active',
+            lastModified: new Date().toISOString()
+          }
+        : workflow
+    ));
+  };
+
+  const handleCloneWorkflow = (workflow: Workflow) => {
+    const clonedWorkflow: Workflow = {
+      ...workflow,
+      id: Date.now().toString(),
+      name: `${workflow.name} (Copy)`,
+      status: 'Draft',
+      createdBy: 'Current User',
+      createdDate: new Date().toISOString(),
+      lastModified: new Date().toISOString(),
+      version: 1
+    };
+    setWorkflows(prev => [...prev, clonedWorkflow]);
+  };
+
   return (
     <div className="h-full flex flex-col">
       {currentView === 'list' ? (
@@ -185,6 +211,8 @@ export const WorkflowManager: React.FC = () => {
               onEditWorkflow={handleEditWorkflow}
               onDeleteWorkflow={handleDeleteWorkflow}
               onOpenWorkflow={handleOpenWorkflow}
+              onToggleStatus={handleToggleWorkflowStatus}
+              onCloneWorkflow={handleCloneWorkflow}
             />
           </div>
         </>
