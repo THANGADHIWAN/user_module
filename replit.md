@@ -5,10 +5,12 @@ This is a comprehensive pharmaceutical Laboratory Information Management System 
 
 ## Project Architecture
 - **Frontend**: React 18 + TypeScript + Vite
+- **Database**: PostgreSQL with environment-based configuration
 - **UI Framework**: Tailwind CSS
 - **Workflow Engine**: React Flow for visual workflow management
 - **Digital Signatures**: DocuSeal React integration
 - **Icons**: Lucide React
+- **State Management**: React hooks with local component state
 
 ### Key Components
 - User Management with CRUD operations
@@ -31,6 +33,12 @@ This is a comprehensive pharmaceutical Laboratory Information Management System 
 - Enhanced digital signature functionality with working save and template creation
 - Fixed user table with sticky headers, proper scrolling, and fixed pagination
 - Improved notification template management with full CRUD operations
+- **2025-07-18**: Major UI/UX improvements and database integration
+- Integrated PostgreSQL database for data persistence
+- Consolidated signature creation into templates section with full CRUD operations
+- Enhanced sidebar with complete icon set and improved tooltip system for all modules
+- Fixed User Management table scrolling with proper height constraints and sticky headers
+- Implemented comprehensive pagination system with page navigation controls
 
 ## User Preferences
 - None specified yet

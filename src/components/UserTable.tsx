@@ -101,7 +101,7 @@ export const UserTable: React.FC<UserTableProps> = ({
 
       {/* Scrollable Table Container */}
       <div className="flex-1 overflow-hidden">
-        <div className="overflow-auto h-full">
+        <div className="overflow-auto h-full" style={{maxHeight: 'calc(100vh - 320px)'}}>
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50 sticky top-0 z-10">
               <tr>

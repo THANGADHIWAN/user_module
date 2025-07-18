@@ -224,7 +224,7 @@ export const DigitalSignatures: React.FC = () => {
   const [templateContent, setTemplateContent] = useState('');
   const [editingTemplate, setEditingTemplate] = useState<SignatureTemplate | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<{show: boolean, templateId: string | null}>({show: false, templateId: null});
-  const [createdSignatures, setCreatedSignatures] = useState<any[]>([]);
+
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -283,20 +283,25 @@ export const DigitalSignatures: React.FC = () => {
       signatureData = typedSignature;
     }
     
-    const newSignature = {
+    const newSignatureTemplate: SignatureTemplate = {
       id: Date.now().toString(),
-      name: signatureName,
-      type: signatureType,
-      data: signatureData,
-      assignedUser,
+      name: signatureName || 'New Signature',
+      description: `Signature created for ${assignedUser}`,
+      category: 'Signature',
+      status: 'Active',
+      fields: [],
+      createdBy: 'Current User',
       createdDate: new Date().toISOString(),
-      status: 'Active'
+      lastModified: new Date().toISOString(),
+      content: signatureData,
+      signatureType: signatureType,
+      assignedUser: assignedUser
     };
     
-    // Add to created signatures list
-    setCreatedSignatures(prev => [...prev, newSignature]);
+    // Add to templates list instead of separate signatures
+    setTemplates(prev => [...prev, newSignatureTemplate]);
     
-    console.log('Saving signature:', newSignature);
+    console.log('Saving signature:', newSignatureTemplate);
     
     // Reset form and close modal
     setSignatureName('');
@@ -332,7 +337,8 @@ export const DigitalSignatures: React.FC = () => {
       'Test Results': 'bg-green-100 text-green-800',
       'Batch Records': 'bg-purple-100 text-purple-800',
       'Deviation Reports': 'bg-red-100 text-red-800',
-      'Change Control': 'bg-orange-100 text-orange-800'
+      'Change Control': 'bg-orange-100 text-orange-800',
+      'Signature': 'bg-green-100 text-green-800'
     };
     return colors[category] || 'bg-gray-100 text-gray-800';
   };
@@ -463,31 +469,6 @@ export const DigitalSignatures: React.FC = () => {
       <div className="flex-1 p-4 overflow-y-auto">
         {activeTab === 'templates' && (
           <div className="space-y-6">
-            {/* Created Signatures Section */}
-            {createdSignatures.length > 0 && (
-              <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Created Signatures</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {createdSignatures.map((signature) => (
-                    <div key={signature.id} className="bg-gray-50 rounded-lg border border-gray-200 p-4">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <div className="p-2 bg-green-50 rounded-lg">
-                          <Pen className="h-4 w-4 text-green-600" />
-                        </div>
-                        <div>
-                          <h4 className="font-medium text-gray-900">{signature.name}</h4>
-                          <p className="text-sm text-gray-500">Assigned to: {signature.assignedUser}</p>
-                        </div>
-                      </div>
-                      <div className="text-xs text-gray-400">
-                        Created: {new Date(signature.createdDate).toLocaleDateString()}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {/* Templates Grid */}
             <div>
               <h3 className="text-lg font-medium text-gray-900 mb-4">Signature Templates</h3>
@@ -498,7 +479,11 @@ export const DigitalSignatures: React.FC = () => {
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center space-x-3">
                           <div className="p-2 bg-blue-50 rounded-lg">
-                            <FileSignature className="h-5 w-5 text-blue-600" />
+                            {template.category === 'Signature' ? (
+                              <Pen className="h-5 w-5 text-green-600" />
+                            ) : (
+                              <FileSignature className="h-5 w-5 text-blue-600" />
+                            )}
                           </div>
                           <div>
                             <h3 className="text-lg font-semibold text-gray-900">{template.name}</h3>
@@ -523,6 +508,12 @@ export const DigitalSignatures: React.FC = () => {
                           <Calendar className="h-3 w-3 mr-1" />
                           <span>Modified {new Date(template.lastModified).toLocaleDateString()}</span>
                         </div>
+                        {(template as any).assignedUser && (
+                          <div className="flex items-center text-xs text-gray-500">
+                            <User className="h-3 w-3 mr-1" />
+                            <span>Assigned to: {(template as any).assignedUser}</span>
+                          </div>
+                        )}
                       </div>
 
                       <div className="flex items-center justify-between pt-4 border-t border-gray-100">
