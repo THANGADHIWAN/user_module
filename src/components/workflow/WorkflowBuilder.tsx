@@ -98,6 +98,36 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ workflow, onSa
     [setEdges, edges, nodes, saveToHistory]
   );
 
+  const onEdgesChange = useCallback(
+    (changes: any) => {
+      const newEdges = edges.filter((edge, index) => {
+        const change = changes.find((c: any) => c.id === edge.id);
+        return !change || change.type !== 'remove';
+      });
+      setEdges(newEdges);
+      saveToHistory(nodes, newEdges);
+    },
+    [edges, setEdges, nodes, saveToHistory]
+  );
+
+  const onNodesChange = useCallback(
+    (changes: any) => {
+      const newNodes = nodes.filter((node, index) => {
+        const change = changes.find((c: any) => c.id === node.id);
+        return !change || change.type !== 'remove';
+      }).map((node) => {
+        const change = changes.find((c: any) => c.id === node.id);
+        if (change && change.type === 'position' && change.position) {
+          return { ...node, position: change.position };
+        }
+        return node;
+      });
+      setNodes(newNodes);
+      saveToHistory(newNodes, edges);
+    },
+    [nodes, setNodes, edges, saveToHistory]
+  );
+
   const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
     setSelectedNode(node);
     setShowPropertiesPanel(true);
@@ -135,6 +165,13 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ workflow, onSa
     onSave(workflowData);
   };
 
+  const handleDeploy = () => {
+    // Save first, then deploy
+    handleSave();
+    // Simulate deployment
+    alert('Workflow deployed successfully!');
+  };
+
   // Keyboard shortcuts
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -165,7 +202,7 @@ export const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ workflow, onSa
               <Save className="h-5 w-5" />
             </button>
             <button
-              onClick={() => console.log('Deploy workflow')}
+              onClick={handleDeploy}
               className="flex items-center space-x-1 p-2 text-green-600 hover:bg-green-50 rounded-md transition-colors"
               title="Deploy Workflow"
             >

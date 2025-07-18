@@ -51,9 +51,9 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({
   const handleSubmit = () => {
     if (!validateForm()) return;
 
-    const newUser: Omit<User, 'id' | 'createdDate' | 'auditLog'> = {
+    const newUser = {
       ...formData,
-      auditLog: []
+      lastLogin: null
     };
 
     onSave(newUser);
