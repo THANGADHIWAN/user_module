@@ -162,7 +162,7 @@ export const UserTable: React.FC<UserTableProps> = ({
             </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {users.map((user) => (
-              <tr key={user.id} className="hover:bg-gray-50">
+              <tr key={user.id} className="hover:bg-gray-50 relative">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <input
                     type="checkbox"
@@ -206,24 +206,24 @@ export const UserTable: React.FC<UserTableProps> = ({
                   {formatDistanceToNow(user.createdDate)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex items-center justify-end space-x-2">
+                  <div className="flex items-center justify-end space-x-2 relative">
                     <button
                       onClick={() => onViewUser(user)}
-                      className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50"
+                      className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 relative z-20 transition-colors"
                       title="View User"
                     >
                       <Eye className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => onEditUser(user)}
-                      className="text-indigo-600 hover:text-indigo-900 p-1 rounded hover:bg-indigo-50"
+                      className="text-indigo-600 hover:text-indigo-900 p-1 rounded hover:bg-indigo-50 relative z-20 transition-colors"
                       title="Edit User"
                     >
                       <Edit className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => onDeleteUser(user)}
-                      className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50"
+                      className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 relative z-20 transition-colors"
                       title="Delete User"
                     >
                       <Trash2 className="h-4 w-4" />
