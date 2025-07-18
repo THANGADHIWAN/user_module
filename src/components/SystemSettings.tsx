@@ -30,7 +30,7 @@ export const SystemSettings: React.FC = () => {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-gray-200">
+      <div className="flex items-center justify-between p-4 border-b border-gray-200">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">System Settings</h1>
           <p className="text-gray-600">Configure system-wide settings and preferences</p>
@@ -67,7 +67,7 @@ export const SystemSettings: React.FC = () => {
       </div>
 
       {/* Content */}
-      <div className="flex-1 p-6 overflow-y-auto">
+      <div className="flex-1 p-4 overflow-y-auto">
         {activeTab === 'general' && (
           <div className="max-w-4xl space-y-8">
             {/* System Information */}

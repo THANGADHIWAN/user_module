@@ -128,7 +128,7 @@ export const UserManagement: React.FC = () => {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-gray-200">
+      <div className="flex items-center justify-between p-4 border-b border-gray-200">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
           <p className="text-gray-600">Manage user accounts, roles, and permissions</p>
@@ -142,7 +142,7 @@ export const UserManagement: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-6 space-y-6">
+      <div className="flex-1 p-4 space-y-4">
         <FilterBar
           filters={filters}
           onFilterChange={setFilters}

@@ -200,7 +200,7 @@ export const Notifications: React.FC = () => {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-gray-200">
+      <div className="flex items-center justify-between p-4 border-b border-gray-200">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
           <p className="text-gray-600">Manage system notifications and alerts</p>
@@ -240,7 +240,7 @@ export const Notifications: React.FC = () => {
       </div>
 
       {/* Content */}
-      <div className="flex-1 p-6 overflow-y-auto">
+      <div className="flex-1 p-4 overflow-y-auto">
         {activeTab === 'templates' && (
           <div className="space-y-6">
             {/* Templates Header */}

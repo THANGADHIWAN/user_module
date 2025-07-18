@@ -141,7 +141,7 @@ export const HelpSupport: React.FC = () => {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-gray-200">
+      <div className="flex items-center justify-between p-4 border-b border-gray-200">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Help & Support</h1>
           <p className="text-gray-600">Get assistance with Pharma LIMS</p>
@@ -172,7 +172,7 @@ export const HelpSupport: React.FC = () => {
       </div>
 
       {/* Content */}
-      <div className="flex-1 p-6 overflow-hidden">
+      <div className="flex-1 p-4 overflow-hidden">
         {activeTab === 'chat' && (
           <div className="h-full flex flex-col max-w-4xl mx-auto">
             {/* Chat Messages */}

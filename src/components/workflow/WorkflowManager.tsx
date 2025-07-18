@@ -164,7 +164,7 @@ export const WorkflowManager: React.FC = () => {
       {currentView === 'list' ? (
         <>
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between p-4 border-b border-gray-200">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Workflow Management</h1>
               <p className="text-gray-600">Create and manage approval workflows</p>
@@ -179,7 +179,7 @@ export const WorkflowManager: React.FC = () => {
           </div>
 
           {/* Workflow List */}
-          <div className="flex-1 p-6">
+          <div className="flex-1 p-4">
             <WorkflowList
               workflows={workflows}
               onEditWorkflow={handleEditWorkflow}
