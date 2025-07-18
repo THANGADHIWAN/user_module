@@ -222,6 +222,9 @@ export const DigitalSignatures: React.FC = () => {
   const [templateDescription, setTemplateDescription] = useState('');
   const [templateCategory, setTemplateCategory] = useState('SOP');
   const [templateContent, setTemplateContent] = useState('');
+  const [editingTemplate, setEditingTemplate] = useState<SignatureTemplate | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<{show: boolean, templateId: string | null}>({show: false, templateId: null});
+  const [createdSignatures, setCreatedSignatures] = useState<any[]>([]);
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -280,13 +283,20 @@ export const DigitalSignatures: React.FC = () => {
       signatureData = typedSignature;
     }
     
-    // Here you would typically save to your backend
-    console.log('Saving signature:', {
+    const newSignature = {
+      id: Date.now().toString(),
       name: signatureName,
       type: signatureType,
       data: signatureData,
-      assignedUser
-    });
+      assignedUser,
+      createdDate: new Date().toISOString(),
+      status: 'Active'
+    };
+    
+    // Add to created signatures list
+    setCreatedSignatures(prev => [...prev, newSignature]);
+    
+    console.log('Saving signature:', newSignature);
     
     // Reset form and close modal
     setSignatureName('');
@@ -328,32 +338,69 @@ export const DigitalSignatures: React.FC = () => {
   };
 
   const handleEditTemplate = (template: SignatureTemplate) => {
+    setEditingTemplate(template);
+    setTemplateName(template.name);
+    setTemplateDescription(template.description);
+    setTemplateCategory(template.category);
+    setTemplateContent(template.content || '');
+    setShowCreateTemplateModal(true);
+  };
+
+  const handleViewTemplate = (template: SignatureTemplate) => {
     setSelectedTemplate(template);
     setShowTemplateModal(true);
   };
 
   const handleCreateTemplate = () => {
-    const newTemplate: SignatureTemplate = {
-      id: Date.now().toString(),
-      name: templateName || 'New Template',
-      description: templateDescription || 'Template description',
-      category: templateCategory as any,
-      status: 'Active',
-      fields: [],
-      createdBy: 'Current User',
-      createdDate: new Date().toISOString(),
-      lastModified: new Date().toISOString(),
-      content: templateContent || ''
-    };
-    
-    setTemplates(prev => [...prev, newTemplate]);
+    if (editingTemplate) {
+      // Update existing template
+      const updatedTemplate: SignatureTemplate = {
+        ...editingTemplate,
+        name: templateName || 'New Template',
+        description: templateDescription || 'Template description',
+        category: templateCategory as any,
+        lastModified: new Date().toISOString(),
+        content: templateContent || ''
+      };
+      
+      setTemplates(prev => prev.map(t => t.id === editingTemplate.id ? updatedTemplate : t));
+      setEditingTemplate(null);
+    } else {
+      // Create new template
+      const newTemplate: SignatureTemplate = {
+        id: Date.now().toString(),
+        name: templateName || 'New Template',
+        description: templateDescription || 'Template description',
+        category: templateCategory as any,
+        status: 'Active',
+        fields: [],
+        createdBy: 'Current User',
+        createdDate: new Date().toISOString(),
+        lastModified: new Date().toISOString(),
+        content: templateContent || ''
+      };
+      
+      setTemplates(prev => [...prev, newTemplate]);
+    }
     
     // Reset form
     setTemplateName('');
     setTemplateDescription('');
     setTemplateCategory('SOP');
     setTemplateContent('');
+    setEditingTemplate(null);
     setShowCreateTemplateModal(false);
+  };
+
+  const handleDeleteTemplate = (templateId: string) => {
+    setConfirmDelete({show: true, templateId});
+  };
+
+  const confirmDeleteTemplate = () => {
+    if (confirmDelete.templateId) {
+      setTemplates(prev => prev.filter(t => t.id !== confirmDelete.templateId));
+    }
+    setConfirmDelete({show: false, templateId: null});
   };
 
   const tabs = [
@@ -416,65 +463,97 @@ export const DigitalSignatures: React.FC = () => {
       <div className="flex-1 p-4 overflow-y-auto">
         {activeTab === 'templates' && (
           <div className="space-y-6">
-            {/* Templates Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {templates.map((template) => (
-                <div key={template.id} className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="p-2 bg-blue-50 rounded-lg">
-                          <FileSignature className="h-5 w-5 text-blue-600" />
+            {/* Created Signatures Section */}
+            {createdSignatures.length > 0 && (
+              <div>
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Created Signatures</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {createdSignatures.map((signature) => (
+                    <div key={signature.id} className="bg-gray-50 rounded-lg border border-gray-200 p-4">
+                      <div className="flex items-center space-x-3 mb-2">
+                        <div className="p-2 bg-green-50 rounded-lg">
+                          <Pen className="h-4 w-4 text-green-600" />
                         </div>
                         <div>
-                          <h3 className="text-lg font-semibold text-gray-900">{template.name}</h3>
-                          <span className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${getCategoryColor(template.category)}`}>
-                            {template.category}
-                          </span>
+                          <h4 className="font-medium text-gray-900">{signature.name}</h4>
+                          <p className="text-sm text-gray-500">Assigned to: {signature.assignedUser}</p>
                         </div>
                       </div>
-                      <span className={getStatusBadge(template.status)}>
-                        {template.status}
-                      </span>
-                    </div>
-
-                    <p className="text-gray-600 text-sm mb-4">{template.description}</p>
-
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-center text-xs text-gray-500">
-                        <User className="h-3 w-3 mr-1" />
-                        <span>Created by {template.createdBy}</span>
-                      </div>
-                      <div className="flex items-center text-xs text-gray-500">
-                        <Calendar className="h-3 w-3 mr-1" />
-                        <span>Modified {new Date(template.lastModified).toLocaleDateString()}</span>
+                      <div className="text-xs text-gray-400">
+                        Created: {new Date(signature.createdDate).toLocaleDateString()}
                       </div>
                     </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <div className="flex items-center space-x-2">
+            {/* Templates Grid */}
+            <div>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Signature Templates</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {templates.map((template) => (
+                  <div key={template.id} className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center space-x-3">
+                          <div className="p-2 bg-blue-50 rounded-lg">
+                            <FileSignature className="h-5 w-5 text-blue-600" />
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-900">{template.name}</h3>
+                            <span className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${getCategoryColor(template.category)}`}>
+                              {template.category}
+                            </span>
+                          </div>
+                        </div>
+                        <span className={getStatusBadge(template.status)}>
+                          {template.status}
+                        </span>
+                      </div>
+
+                      <p className="text-gray-600 text-sm mb-4">{template.description}</p>
+
+                      <div className="space-y-2 mb-4">
+                        <div className="flex items-center text-xs text-gray-500">
+                          <User className="h-3 w-3 mr-1" />
+                          <span>Created by {template.createdBy}</span>
+                        </div>
+                        <div className="flex items-center text-xs text-gray-500">
+                          <Calendar className="h-3 w-3 mr-1" />
+                          <span>Modified {new Date(template.lastModified).toLocaleDateString()}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                        <div className="flex items-center space-x-2">
+                          <button 
+                            onClick={() => handleViewTemplate(template)}
+                            className="flex items-center space-x-1 px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-md"
+                          >
+                            <Eye className="h-3 w-3" />
+                            <span>View</span>
+                          </button>
+                          <button 
+                            onClick={() => handleEditTemplate(template)}
+                            className="flex items-center space-x-1 px-3 py-1 text-sm text-gray-600 hover:bg-gray-50 rounded-md"
+                          >
+                            <Edit className="h-3 w-3" />
+                            <span>Edit</span>
+                          </button>
+                        </div>
                         <button 
-                          onClick={() => handleEditTemplate(template)}
-                          className="flex items-center space-x-1 px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-md"
+                          onClick={() => handleDeleteTemplate(template.id)}
+                          className="p-1 text-red-600 hover:bg-red-50 rounded"
+                          title="Delete Template"
                         >
-                          <Eye className="h-3 w-3" />
-                          <span>View</span>
-                        </button>
-                        <button 
-                          onClick={() => handleEditTemplate(template)}
-                          className="flex items-center space-x-1 px-3 py-1 text-sm text-gray-600 hover:bg-gray-50 rounded-md"
-                        >
-                          <Edit className="h-3 w-3" />
-                          <span>Edit</span>
+                          <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
-                      <button className="p-1 text-red-600 hover:bg-red-50 rounded">
-                        <Trash2 className="h-4 w-4" />
-                      </button>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -795,7 +874,9 @@ export const DigitalSignatures: React.FC = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-900">Create Signature Template</h2>
+              <h2 className="text-xl font-semibold text-gray-900">
+                {editingTemplate ? 'Edit Signature Template' : 'Create Signature Template'}
+              </h2>
               <button
                 onClick={() => setShowCreateTemplateModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -877,7 +958,14 @@ export const DigitalSignatures: React.FC = () => {
 
             <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
               <button
-                onClick={() => setShowCreateTemplateModal(false)}
+                onClick={() => {
+                  setShowCreateTemplateModal(false);
+                  setEditingTemplate(null);
+                  setTemplateName('');
+                  setTemplateDescription('');
+                  setTemplateCategory('SOP');
+                  setTemplateContent('');
+                }}
                 className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
               >
                 Cancel
@@ -887,7 +975,7 @@ export const DigitalSignatures: React.FC = () => {
                 className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
               >
                 <Save className="h-4 w-4" />
-                <span>Create Template</span>
+                <span>{editingTemplate ? 'Update Template' : 'Create Template'}</span>
               </button>
             </div>
           </div>
@@ -928,6 +1016,42 @@ export const DigitalSignatures: React.FC = () => {
               <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700">
                 Edit Template
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {confirmDelete.show && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-md w-full">
+            <div className="p-6">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="p-2 bg-red-50 rounded-lg">
+                  <Trash2 className="h-6 w-6 text-red-600" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">Delete Template</h2>
+                  <p className="text-sm text-gray-500">This action cannot be undone</p>
+                </div>
+              </div>
+              <p className="text-gray-700 mb-6">
+                Are you sure you want to delete this signature template? All associated data will be permanently removed.
+              </p>
+              <div className="flex items-center justify-end space-x-3">
+                <button
+                  onClick={() => setConfirmDelete({show: false, templateId: null})}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={confirmDeleteTemplate}
+                  className="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700"
+                >
+                  Delete Template
+                </button>
+              </div>
             </div>
           </div>
         </div>
