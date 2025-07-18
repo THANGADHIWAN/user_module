@@ -12,7 +12,7 @@ export default defineConfig({
     port: 5000,
     allowedHosts: [
       "all",
-      "dd86dff1-ac78-41a7-bdd4-4cef49e9d0ab-00-5jiuabjzpit6.spock.replit.dev",
+      "75b511fc-9053-4e66-8bd4-acddae9742ef-00-356gh47kldf3k.worf.replit.dev",
       "localhost",
       "127.0.0.1",
     ],

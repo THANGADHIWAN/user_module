@@ -352,19 +352,19 @@ export const Notifications: React.FC = () => {
               {filteredTemplates.map((template) => (
                 <div
                   key={template.id}
-                  className="bg-white rounded-lg border border-gray-200 p-6 flex flex-col justify-between shadow-sm relative"
-                  style={{ minHeight: 320 }} // Increased card height to avoid overlap
+                  className="bg-white rounded-lg border border-gray-200 p-6 flex flex-col shadow-sm relative"
+                  style={{ minHeight: 380 }} // Increased card height to provide more space
                 >
-                  <div className="flex items-start justify-between mb-2">
-                    <div>
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1 mr-4">
                       <h4 className="text-lg font-medium text-gray-900 cursor-pointer hover:underline"
                         onClick={() => openViewModal(template)}
                       >
                         {template.name}
                       </h4>
-                      <p className="text-sm text-gray-600">{template.subject}</p>
+                      <p className="text-sm text-gray-600 mt-1">{template.subject}</p>
                     </div>
-                    <div className="flex flex-col items-end space-y-1">
+                    <div className="flex flex-col items-end space-y-2">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                         template.active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
                       }`}>
@@ -375,26 +375,26 @@ export const Notifications: React.FC = () => {
                       </span>
                     </div>
                   </div>
-                  <div className="bg-gray-50 rounded-md p-3 mb-2 flex-1">
-                    <p className="text-sm text-gray-700 whitespace-pre-line line-clamp-3">{template.body}</p>
+                  <div className="bg-gray-50 rounded-md p-3 mb-4 flex-1">
+                    <p className="text-sm text-gray-700 whitespace-pre-line line-clamp-4">{template.body}</p>
                   </div>
-                  <div className="flex items-center justify-between mt-2">
+                  <div className="flex items-center justify-between mb-16">
                     <div className="text-xs text-gray-500">
                       <span>Triggers: {template.triggers.join(', ')}</span>
                     </div>
                   </div>
-                  {/* Action icons at bottom corners */}
+                  {/* Action icons at bottom with better spacing */}
                   <div className="absolute left-4 bottom-4 flex space-x-2">
                     <button
                       onClick={() => openViewModal(template)}
-                      className="flex items-center space-x-1 px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-md"
+                      className="flex items-center space-x-1 px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
                     >
                       <Eye className="h-3 w-3" />
                       <span>View</span>
                     </button>
                     <button
                       onClick={() => openEditModal(template)}
-                      className="flex items-center space-x-1 px-3 py-1 text-sm text-gray-600 hover:bg-gray-50 rounded-md"
+                      className="flex items-center space-x-1 px-3 py-1 text-sm text-gray-600 hover:bg-gray-50 rounded-md transition-colors"
                     >
                       <Edit className="h-3 w-3" />
                       <span>Edit</span>
@@ -402,11 +402,11 @@ export const Notifications: React.FC = () => {
                   </div>
                   <div className="absolute right-4 bottom-4">
                     <button
-                      className="p-1 text-red-600 hover:bg-red-50 rounded"
+                      className="p-1 text-red-600 hover:bg-red-50 rounded transition-colors"
                       title="Delete"
                       onClick={() => { setSelectedTemplate(template); setShowDeleteConfirm(true); }}
                     >
-                      <Trash2 className="h-5 w-5" />
+                      <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
                 </div>
