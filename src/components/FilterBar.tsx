@@ -56,7 +56,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             </button>
             
             {showFilters && (
-              <div className="absolute top-full left-0 mt-1 w-80 bg-white border border-gray-200 rounded-md shadow-lg z-10 p-4">
+              <div className="absolute top-full left-0 mt-1 w-80 bg-white border border-gray-200 rounded-md shadow-lg z-50 p-4">
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>

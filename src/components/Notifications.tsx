@@ -108,6 +108,7 @@ const sampleTemplates: NotificationTemplate[] = [
     subject: 'Action Required: {{workflow_name}} Approval',
     body: 'Hello {{recipient_name}},\n\nThe workflow "{{workflow_name}}" requires your approval.\n\nPlease review and take action at your earliest convenience.',
     type: 'email',
+    category: 'Workflow',
     triggers: ['workflow_approval_required'],
     recipients: ['approvers', 'workflow_owner'],
     active: true
@@ -118,7 +119,41 @@ const sampleTemplates: NotificationTemplate[] = [
     subject: 'System Backup {{status}}',
     body: 'System backup has {{status}} at {{timestamp}}.\n\n{{details}}',
     type: 'email',
+    category: 'System',
     triggers: ['backup_completed', 'backup_failed'],
+    recipients: ['system_admins'],
+    active: true
+  },
+  {
+    id: '3',
+    name: 'User Account Created',
+    subject: 'Welcome to LIMS - {{user_name}}',
+    body: 'Welcome {{user_name}},\n\nYour account has been created successfully.\n\nUsername: {{username}}\nRole: {{role}}\n\nPlease change your password on first login.',
+    type: 'email',
+    category: 'User',
+    triggers: ['user_created'],
+    recipients: ['new_user'],
+    active: true
+  },
+  {
+    id: '4',
+    name: 'Security Alert',
+    subject: 'Security Alert - {{alert_type}}',
+    body: 'Security Alert: {{alert_type}}\n\nTime: {{timestamp}}\nDetails: {{details}}\n\nPlease review and take appropriate action.',
+    type: 'email',
+    category: 'Security',
+    triggers: ['security_alert'],
+    recipients: ['security_team', 'system_admins'],
+    active: true
+  },
+  {
+    id: '5',
+    name: 'Backup Failure',
+    subject: 'Backup Failed - {{backup_type}}',
+    body: 'Backup failure detected:\n\nBackup Type: {{backup_type}}\nTime: {{timestamp}}\nError: {{error_message}}\n\nImmediate attention required.',
+    type: 'email',
+    category: 'Backup',
+    triggers: ['backup_failed'],
     recipients: ['system_admins'],
     active: true
   }

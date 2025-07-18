@@ -103,9 +103,9 @@ export const UserTable: React.FC<UserTableProps> = ({
       <div className="flex-1 overflow-hidden">
         <div className="overflow-auto h-full" style={{maxHeight: 'calc(100vh - 320px)'}}>
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50 sticky top-0 z-20">
+            <thead className="bg-gray-50 sticky top-0 z-10">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left bg-gray-50 sticky top-0 z-20">
+                <th scope="col" className="px-6 py-3 text-left bg-gray-50 sticky top-0 z-10">
                   <input
                     type="checkbox"
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
@@ -115,47 +115,47 @@ export const UserTable: React.FC<UserTableProps> = ({
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-20"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10"
                   onClick={() => onSort('name')}
                 >
                   User Name {getSortIcon('name')}
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-20"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10"
                   onClick={() => onSort('role')}
                 >
                   Role {getSortIcon('role')}
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-20"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10"
                   onClick={() => onSort('status')}
                 >
                   Status {getSortIcon('status')}
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-20"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10"
                   onClick={() => onSort('lastLogin')}
                 >
                   Last Login {getSortIcon('lastLogin')}
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-20"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10"
                   onClick={() => onSort('digitalSignatureStatus')}
                 >
                   Digital Signature {getSortIcon('digitalSignatureStatus')}
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-20"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10"
                   onClick={() => onSort('createdDate')}
                 >
                   Created Date {getSortIcon('createdDate')}
                 </th>
-                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50 sticky top-0 z-20">
+                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50 sticky top-0 z-10">
                   Actions
                 </th>
               </tr>
