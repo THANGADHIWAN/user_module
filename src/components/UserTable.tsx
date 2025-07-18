@@ -1,7 +1,7 @@
 import React from 'react';
 import { User } from '../types/user';
 import { formatDistanceToNow } from '../utils/dateUtils';
-import { Eye, Edit, Trash2, MoreHorizontal } from 'lucide-react';
+import { Eye, Edit, Trash2, MoreHorizontal, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface UserTableProps {
   users: User[];
@@ -14,6 +14,12 @@ interface UserTableProps {
   sortField: keyof User | null;
   sortDirection: 'asc' | 'desc';
   onSort: (field: keyof User) => void;
+  currentPage: number;
+  totalPages: number;
+  itemsPerPage: number;
+  totalItems: number;
+  onPageChange: (page: number) => void;
+  onItemsPerPageChange: (itemsPerPage: number) => void;
 }
 
 export const UserTable: React.FC<UserTableProps> = ({
@@ -26,7 +32,13 @@ export const UserTable: React.FC<UserTableProps> = ({
   onDeleteUser,
   sortField,
   sortDirection,
-  onSort
+  onSort,
+  currentPage,
+  totalPages,
+  itemsPerPage,
+  totalItems,
+  onPageChange,
+  onItemsPerPageChange
 }) => {
   const getSortIcon = (field: keyof User) => {
     if (sortField !== field) return '↕️';
@@ -65,8 +77,30 @@ export const UserTable: React.FC<UserTableProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
-      <div className="overflow-x-auto">
+    <div className="bg-white rounded-lg shadow overflow-hidden flex flex-col">
+      {/* Table Header with Pagination Info */}
+      <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+        <div className="text-sm text-gray-700">
+          Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} users
+        </div>
+        <div className="flex items-center space-x-2">
+          <label className="text-sm text-gray-700">Show:</label>
+          <select
+            value={itemsPerPage}
+            onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
+            className="px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value={10}>10</option>
+            <option value={25}>25</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+          </select>
+          <span className="text-sm text-gray-700">per page</span>
+        </div>
+      </div>
+
+      {/* Scrollable Table Container */}
+      <div className="flex-1 overflow-auto max-h-96">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
@@ -199,6 +233,64 @@ export const UserTable: React.FC<UserTableProps> = ({
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage <= 1}
+            className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft className="h-4 w-4 mr-1" />
+            Previous
+          </button>
+          <button
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage >= totalPages}
+            className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Next
+            <ChevronRight className="h-4 w-4 ml-1" />
+          </button>
+        </div>
+
+        {/* Page Numbers */}
+        <div className="flex items-center space-x-1">
+          {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+            let pageNum;
+            if (totalPages <= 7) {
+              pageNum = i + 1;
+            } else if (currentPage <= 4) {
+              pageNum = i + 1;
+            } else if (currentPage >= totalPages - 3) {
+              pageNum = totalPages - 6 + i;
+            } else {
+              pageNum = currentPage - 3 + i;
+            }
+
+            if (pageNum < 1 || pageNum > totalPages) return null;
+
+            return (
+              <button
+                key={pageNum}
+                onClick={() => onPageChange(pageNum)}
+                className={`px-3 py-2 text-sm font-medium rounded-md ${
+                  currentPage === pageNum
+                    ? 'bg-blue-600 text-white'
+                    : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
+                }`}
+              >
+                {pageNum}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="text-sm text-gray-700">
+          Page {currentPage} of {totalPages}
+        </div>
       </div>
     </div>
   );

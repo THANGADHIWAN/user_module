@@ -8,13 +8,15 @@ export const useUserManagement = () => {
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
   const [sortField, setSortField] = useState<keyof User | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [filters, setFilters] = useState<FilterOptions>({
     role: 'All',
     status: 'All',
     search: ''
   });
 
-  const filteredUsers = useMemo(() => {
+  const { filteredUsers, paginatedUsers, totalPages } = useMemo(() => {
     let filtered = users.filter(user => {
       // Role filter
       if (filters.role !== 'All' && user.role !== filters.role) return false;
@@ -55,8 +57,17 @@ export const useUserManagement = () => {
       });
     }
 
-    return filtered;
-  }, [users, filters, sortField, sortDirection]);
+    // Pagination
+    const totalPages = Math.ceil(filtered.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedUsers = filtered.slice(startIndex, startIndex + itemsPerPage);
+
+    return {
+      filteredUsers: filtered,
+      paginatedUsers,
+      totalPages
+    };
+  }, [users, filters, sortField, sortDirection, currentPage, itemsPerPage]);
 
   const handleSort = (field: keyof User) => {
     if (sortField === field) {
@@ -65,6 +76,17 @@ export const useUserManagement = () => {
       setSortField(field);
       setSortDirection('asc');
     }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    setSelectedUsers(new Set()); // Clear selections when changing pages
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Reset to first page
+    setSelectedUsers(new Set()); // Clear selections
   };
 
   const handleSelectUser = (userId: string) => {
@@ -78,10 +100,10 @@ export const useUserManagement = () => {
   };
 
   const handleSelectAll = () => {
-    if (selectedUsers.size === filteredUsers.length && filteredUsers.length > 0) {
+    if (selectedUsers.size === paginatedUsers.length && paginatedUsers.length > 0) {
       setSelectedUsers(new Set());
     } else {
-      setSelectedUsers(new Set(filteredUsers.map(user => user.id)));
+      setSelectedUsers(new Set(paginatedUsers.map(user => user.id)));
     }
   };
 
@@ -152,13 +174,20 @@ export const useUserManagement = () => {
   };
 
   return {
-    users: filteredUsers,
+    users: paginatedUsers,
+    allUsers: filteredUsers,
+    totalUsers: filteredUsers.length,
     selectedUsers,
+    currentPage,
+    totalPages,
+    itemsPerPage,
     sortField,
     sortDirection,
     filters,
     setFilters,
     handleSort,
+    handlePageChange,
+    handleItemsPerPageChange,
     handleSelectUser,
     handleSelectAll,
     updateUser,

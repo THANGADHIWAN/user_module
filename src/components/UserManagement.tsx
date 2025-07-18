@@ -11,12 +11,19 @@ import { Users } from 'lucide-react';
 export const UserManagement: React.FC = () => {
   const {
     users,
+    allUsers,
+    totalUsers,
     selectedUsers,
+    currentPage,
+    totalPages,
+    itemsPerPage,
     sortField,
     sortDirection,
     filters,
     setFilters,
     handleSort,
+    handlePageChange,
+    handleItemsPerPageChange,
     handleSelectUser,
     handleSelectAll,
     updateUser,
@@ -136,7 +143,7 @@ export const UserManagement: React.FC = () => {
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2 text-sm text-gray-600">
             <Users className="h-4 w-4" />
-            <span>{users.length} users</span>
+            <span>{totalUsers} users</span>
           </div>
         </div>
       </div>
@@ -154,20 +161,28 @@ export const UserManagement: React.FC = () => {
           onBulkDelete={handleBulkDelete}
         />
 
-        <UserTable
-          users={users}
-          selectedUsers={selectedUsers}
-          onSelectUser={handleSelectUser}
-          onSelectAll={handleSelectAll}
-          onViewUser={handleViewUser}
-          onEditUser={handleEditUser}
-          onDeleteUser={handleDeleteUser}
-          sortField={sortField}
-          sortDirection={sortDirection}
-          onSort={handleSort}
-        />
+        <div className="bg-white rounded-lg shadow">
+          <UserTable
+            users={users}
+            selectedUsers={selectedUsers}
+            onSelectUser={handleSelectUser}
+            onSelectAll={handleSelectAll}
+            onViewUser={handleViewUser}
+            onEditUser={handleEditUser}
+            onDeleteUser={handleDeleteUser}
+            sortField={sortField}
+            sortDirection={sortDirection}
+            onSort={handleSort}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            itemsPerPage={itemsPerPage}
+            totalItems={totalUsers}
+            onPageChange={handlePageChange}
+            onItemsPerPageChange={handleItemsPerPageChange}
+          />
+        </div>
 
-        {users.length === 0 && (
+        {totalUsers === 0 && (
           <div className="text-center py-12">
             <Users className="mx-auto h-12 w-12 text-gray-400" />
             <h3 className="mt-2 text-sm font-medium text-gray-900">No users found</h3>
