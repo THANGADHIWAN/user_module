@@ -699,7 +699,7 @@ export const CustomFields: React.FC = () => {
         // Page List View
         <div className="flex-1 flex flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between p-4 border-b border-gray-200">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Custom Fields</h1>
               <p className="text-gray-600">Configure custom fields for different module pages</p>
@@ -707,7 +707,7 @@ export const CustomFields: React.FC = () => {
           </div>
 
           {/* Module Filter */}
-          <div className="p-6 border-b border-gray-200">
+          <div className="p-4 border-b border-gray-200">
             <div className="flex items-center space-x-4">
               <label className="text-sm font-medium text-gray-700">Filter by Module:</label>
               <select
@@ -724,7 +724,7 @@ export const CustomFields: React.FC = () => {
           </div>
 
           {/* Pages Grid */}
-          <div className="flex-1 p-6 overflow-y-auto">
+          <div className="flex-1 p-4 overflow-y-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredPages.map((page) => (
                 <div
