@@ -69,7 +69,7 @@ export const SystemSettings: React.FC = () => {
       {/* Content */}
       <div className="flex-1 p-4 overflow-y-auto">
         {activeTab === 'general' && (
-          <div className="max-w-4xl space-y-8">
+          <div className="space-y-8">
             {/* System Information */}
             <div className="bg-white rounded-lg border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">System Information</h3>
@@ -171,7 +171,7 @@ export const SystemSettings: React.FC = () => {
         )}
 
         {activeTab === 'security' && (
-          <div className="max-w-4xl space-y-8">
+          <div className="space-y-8">
             {/* Password Policy */}
             <div className="bg-white rounded-lg border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Password Policy</h3>
@@ -288,7 +288,7 @@ export const SystemSettings: React.FC = () => {
         )}
 
         {activeTab === 'database' && (
-          <div className="max-w-4xl space-y-8">
+          <div className="space-y-8">
             {/* Database Configuration */}
             <div className="bg-white rounded-lg border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Database Configuration</h3>
@@ -410,7 +410,7 @@ export const SystemSettings: React.FC = () => {
         )}
 
         {activeTab === 'integrations' && (
-          <div className="max-w-4xl space-y-8">
+          <div className="space-y-8">
             {/* API Settings */}
             <div className="bg-white rounded-lg border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">API Configuration</h3>
@@ -513,7 +513,7 @@ export const SystemSettings: React.FC = () => {
         )}
 
         {activeTab === 'audit' && (
-          <div className="max-w-4xl space-y-8">
+          <div className="space-y-8">
             {/* Audit Trail Settings */}
             <div className="bg-white rounded-lg border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Audit Trail Configuration</h3>

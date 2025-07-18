@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Workflow, WorkflowCategory } from '../../types/workflow';
+import React from 'react';
+import { Workflow } from '../../types/workflow';
 import { formatDistanceToNow } from '../../utils/dateUtils';
 import { 
   Edit, 
@@ -31,31 +31,8 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({
   onToggleStatus,
   onCloneWorkflow
 }) => {
-  const [filterCategory, setFilterCategory] = useState<WorkflowCategory | 'All'>('All');
-  const [filterStatus, setFilterStatus] = useState<'All' | 'Active' | 'Draft' | 'Inactive'>('All');
-
-  const filteredWorkflows = workflows.filter(workflow => {
-    if (filterCategory !== 'All' && workflow.category !== filterCategory) return false;
-    if (filterStatus !== 'All' && workflow.status !== filterStatus) return false;
-    return true;
-  });
-
-  const getStatusBadge = (status: string) => {
-    const baseClasses = 'px-2 py-1 rounded-full text-xs font-medium';
-    switch (status) {
-      case 'Active':
-        return `${baseClasses} bg-green-100 text-green-800`;
-      case 'Draft':
-        return `${baseClasses} bg-yellow-100 text-yellow-800`;
-      case 'Inactive':
-        return `${baseClasses} bg-red-100 text-red-800`;
-      default:
-        return `${baseClasses} bg-gray-100 text-gray-800`;
-    }
-  };
-
-  const getCategoryColor = (category: WorkflowCategory) => {
-    const colors: Record<WorkflowCategory, string> = {
+  const getCategoryColor = (category: string) => {
+    const colors: Record<string, string> = {
       'Sample Testing': 'bg-blue-100 text-blue-800',
       'Document Review': 'bg-purple-100 text-purple-800',
       'Equipment Qualification': 'bg-green-100 text-green-800',
@@ -70,42 +47,9 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Filters */}
-      <div className="flex items-center space-x-4">
-        <div className="flex items-center space-x-2">
-          <Filter className="h-4 w-4 text-gray-500" />
-          <select
-            value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value as WorkflowCategory | 'All')}
-            className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          >
-            <option value="All">All Categories</option>
-            <option value="Sample Testing">Sample Testing</option>
-            <option value="Document Review">Document Review</option>
-            <option value="Equipment Qualification">Equipment Qualification</option>
-            <option value="Change Control">Change Control</option>
-            <option value="Deviation Management">Deviation Management</option>
-            <option value="Training">Training</option>
-            <option value="Audit">Audit</option>
-            <option value="Regulatory Submission">Regulatory Submission</option>
-          </select>
-        </div>
-
-        <select
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value as 'All' | 'Active' | 'Draft' | 'Inactive')}
-          className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option value="All">All Status</option>
-          <option value="Active">Active</option>
-          <option value="Draft">Draft</option>
-          <option value="Inactive">Inactive</option>
-        </select>
-      </div>
-
       {/* Workflow Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredWorkflows.map((workflow) => (
+        {workflows.map((workflow) => (
           <div
             key={workflow.id}
             className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
@@ -124,11 +68,6 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({
                       {workflow.category}
                     </span>
                   </div>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <span className={getStatusBadge(workflow.status)}>
-                    {workflow.status}
-                  </span>
                 </div>
               </div>
 
@@ -175,31 +114,34 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({
                     <Copy className="h-3 w-3" />
                     <span>Clone</span>
                   </button>
-                </div>
-                <div className="flex items-center space-x-1">
+                  {/* Run/Pause button */}
                   {workflow.status === 'Active' ? (
-                    <button 
-                      onClick={(e) => {
+                    <button
+                      onClick={e => {
                         e.stopPropagation();
                         onToggleStatus(workflow.id);
                       }}
-                      className="p-1 text-orange-600 hover:bg-orange-50 rounded"
+                      className="flex items-center space-x-1 px-3 py-1 text-sm text-yellow-700 hover:bg-yellow-50 rounded-md"
                       title="Pause Workflow"
                     >
-                      <Pause className="h-4 w-4" />
+                      <Pause className="h-3 w-3" />
+                      <span>Pause</span>
                     </button>
                   ) : (
-                    <button 
-                      onClick={(e) => {
+                    <button
+                      onClick={e => {
                         e.stopPropagation();
                         onToggleStatus(workflow.id);
                       }}
-                      className="p-1 text-green-600 hover:bg-green-50 rounded"
-                      title="Activate Workflow"
+                      className="flex items-center space-x-1 px-3 py-1 text-sm text-green-700 hover:bg-green-50 rounded-md"
+                      title="Run Workflow"
                     >
-                      <Play className="h-4 w-4" />
+                      <Play className="h-3 w-3" />
+                      <span>Run</span>
                     </button>
                   )}
+                </div>
+                <div>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -216,7 +158,7 @@ export const WorkflowList: React.FC<WorkflowListProps> = ({
         ))}
       </div>
 
-      {filteredWorkflows.length === 0 && (
+      {workflows.length === 0 && (
         <div className="text-center py-12">
           <GitBranch className="mx-auto h-12 w-12 text-gray-400" />
           <h3 className="mt-2 text-sm font-medium text-gray-900">No workflows found</h3>

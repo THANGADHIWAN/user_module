@@ -239,6 +239,15 @@ export const CustomFields: React.FC = () => {
     position: { x: 40, y: 40 },
     size: { width: 300, height: 40 }
   });
+  const [showDeleteDialog, setShowDeleteDialog] = useState<{ open: boolean; page: ModulePage | null }>({ open: false, page: null });
+  const [showAddPageModal, setShowAddPageModal] = useState(false);
+  const [newPageData, setNewPageData] = useState<Partial<ModulePage>>({
+    name: '',
+    module: modules[0],
+    description: '',
+    fields: [],
+    lastModified: new Date().toISOString()
+  });
 
   const canvasRef = useRef<HTMLDivElement>(null);
 
@@ -377,6 +386,48 @@ export const CustomFields: React.FC = () => {
     setSelectedPage(updatedPage);
     setShowFieldModal(false);
     setEditingField(null);
+  };
+
+  const handleDeletePage = (page: ModulePage) => {
+    setShowDeleteDialog({ open: true, page });
+  };
+
+  const confirmDeletePage = () => {
+    if (!showDeleteDialog.page) return;
+    setPages(prev => prev.filter(p => p.id !== showDeleteDialog.page!.id));
+    setShowDeleteDialog({ open: false, page: null });
+    if (selectedPage?.id === showDeleteDialog.page.id) {
+      setSelectedPage(null);
+    }
+  };
+
+  const cancelDeletePage = () => {
+    setShowDeleteDialog({ open: false, page: null });
+  };
+
+  // Add new page handler
+  const handleAddPage = () => {
+    setShowAddPageModal(true);
+    setNewPageData({
+      name: '',
+      module: modules[0],
+      description: '',
+      fields: [],
+      lastModified: new Date().toISOString()
+    });
+  };
+
+  const handleSaveNewPage = () => {
+    if (!newPageData.name || !newPageData.module) return;
+    const newPage: ModulePage = {
+      ...newPageData,
+      id: Date.now().toString(),
+      fields: [],
+      lastModified: new Date().toISOString()
+    } as ModulePage;
+    setPages(prev => [...prev, newPage]);
+    setShowAddPageModal(false);
+    setSelectedPage(newPage);
   };
 
   const renderFieldPreview = (field: CustomField) => {
@@ -711,20 +762,29 @@ export const CustomFields: React.FC = () => {
               <h1 className="text-2xl font-bold text-gray-900">Custom Fields</h1>
               <p className="text-gray-600">Configure custom fields for different module pages</p>
             </div>
+            {/* Add Custom Field Button */}
+            <button
+              onClick={handleAddPage}
+              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              <Plus className="h-5 w-5" />
+              <span>Add Custom Field</span>
+            </button>
           </div>
 
           {/* Search and Filters */}
           <div className="p-4 bg-gray-50 border-b border-gray-200">
             <div className="flex flex-col sm:flex-row gap-4">
               {/* Search */}
-              <div className="flex-1 relative">
+              <div className="flex-1 relative max-w-xs">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <input
                   type="text"
-                  placeholder="Search pages by name, description, or module..."
+                  placeholder="Search pages..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  maxLength={40}
                 />
               </div>
 
@@ -761,10 +821,10 @@ export const CustomFields: React.FC = () => {
               {filteredPages.map((page) => (
                 <div
                   key={page.id}
-                  className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                  className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col h-full"
                   onClick={() => handlePageClick(page)}
                 >
-                  <div className="p-6">
+                  <div className="p-6 flex-1 flex flex-col">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center space-x-3">
                         <div className="p-2 bg-blue-50 rounded-lg">
@@ -778,9 +838,7 @@ export const CustomFields: React.FC = () => {
                         </div>
                       </div>
                     </div>
-
                     <p className="text-gray-600 text-sm mb-4">{page.description}</p>
-
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center text-xs text-gray-500">
                         <span>{page.fields.length} fields configured</span>
@@ -790,27 +848,39 @@ export const CustomFields: React.FC = () => {
                         <span>Modified {new Date(page.lastModified).toLocaleDateString()}</span>
                       </div>
                     </div>
-
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                      <div className="flex items-center space-x-1">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handlePageClick(page);
+                          }}
+                          className="flex items-center space-x-1 px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-md"
+                        >
+                          <Eye className="h-3 w-3" />
+                          <span>View</span>
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditPage(page);
+                          }}
+                          className="flex items-center space-x-1 px-3 py-1 text-sm text-gray-600 hover:bg-gray-50 rounded-md"
+                        >
+                          <Edit className="h-3 w-3" />
+                          <span>Edit</span>
+                        </button>
+                      </div>
+                      {/* Move delete icon here */}
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handlePageClick(page);
+                          handleDeletePage(page);
                         }}
-                        className="flex items-center space-x-1 px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-md"
+                        className="p-2 text-red-600 hover:bg-red-50 rounded transition ml-auto"
+                        title="Delete Page"
                       >
-                        <Eye className="h-3 w-3" />
-                        <span>View</span>
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditPage(page);
-                        }}
-                        className="flex items-center space-x-1 px-3 py-1 text-sm text-gray-600 hover:bg-gray-50 rounded-md"
-                      >
-                        <Edit className="h-3 w-3" />
-                        <span>Edit</span>
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                   </div>
@@ -937,6 +1007,35 @@ export const CustomFields: React.FC = () => {
         </div>
       )}
 
+      {/* Delete Confirmation Dialog */}
+      {showDeleteDialog.open && showDeleteDialog.page && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-6">
+            <div className="flex items-center mb-4">
+              <Trash2 className="h-6 w-6 text-red-600 mr-2" />
+              <h2 className="text-lg font-semibold text-gray-900">Delete Page</h2>
+            </div>
+            <p className="mb-6 text-gray-700">
+              Are you sure you want to delete <span className="font-semibold">{showDeleteDialog.page.name}</span>? This action cannot be undone.
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={cancelDeletePage}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeletePage}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Field Edit Modal */}
       {showFieldModal && editingField && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -1048,6 +1147,78 @@ export const CustomFields: React.FC = () => {
               >
                 <Save className="h-4 w-4" />
                 <span>Save Field</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Page Modal */}
+      {showAddPageModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-lg w-full overflow-hidden">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-900">Add Custom Field Page</h2>
+              <button
+                onClick={() => setShowAddPageModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Page Name
+                </label>
+                <input
+                  type="text"
+                  value={newPageData.name || ''}
+                  onChange={e => setNewPageData(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  maxLength={40}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Module
+                </label>
+                <select
+                  value={newPageData.module || modules[0]}
+                  onChange={e => setNewPageData(prev => ({ ...prev, module: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  {modules.map(module => (
+                    <option key={module} value={module}>{module}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Description
+                </label>
+                <textarea
+                  value={newPageData.description || ''}
+                  onChange={e => setNewPageData(prev => ({ ...prev, description: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  rows={3}
+                  maxLength={200}
+                />
+              </div>
+            </div>
+            <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+              <button
+                onClick={() => setShowAddPageModal(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveNewPage}
+                className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
+              >
+                <Save className="h-4 w-4" />
+                <span>Save</span>
               </button>
             </div>
           </div>

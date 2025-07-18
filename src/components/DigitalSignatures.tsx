@@ -21,7 +21,8 @@ import {
   Image as ImageIcon,
   Save,
   RotateCcw,
-  Check
+  Check,
+  Search
 } from 'lucide-react';
 
 interface SignatureTemplate {
@@ -224,6 +225,9 @@ export const DigitalSignatures: React.FC = () => {
   const [templateContent, setTemplateContent] = useState('');
   const [editingTemplate, setEditingTemplate] = useState<SignatureTemplate | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<{show: boolean, templateId: string | null}>({show: false, templateId: null});
+  const [editingSignature, setEditingSignature] = useState<SignatureTemplate | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterCategory, setFilterCategory] = useState<string>('All');
 
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -276,39 +280,53 @@ export const DigitalSignatures: React.FC = () => {
   const saveSignature = () => {
     const canvas = canvasRef.current;
     let signatureData = '';
-    
+
     if (signatureType === 'draw' && canvas) {
       signatureData = canvas.toDataURL();
     } else if (signatureType === 'type') {
       signatureData = typedSignature;
     }
-    
-    const newSignatureTemplate: SignatureTemplate = {
-      id: Date.now().toString(),
-      name: signatureName || 'New Signature',
-      description: `Signature created for ${assignedUser}`,
-      category: 'Signature',
-      status: 'Active',
-      fields: [],
-      createdBy: 'Current User',
-      createdDate: new Date().toISOString(),
-      lastModified: new Date().toISOString(),
-      content: signatureData,
-      signatureType: signatureType,
-      assignedUser: assignedUser
-    };
-    
-    // Add to templates list instead of separate signatures
-    setTemplates(prev => [...prev, newSignatureTemplate]);
-    
-    console.log('Saving signature:', newSignatureTemplate);
-    
+
+    if (editingSignature) {
+      // Update existing signature
+      const updatedSignature: SignatureTemplate = {
+        ...editingSignature,
+        name: signatureName || 'New Signature',
+        description: `Signature created for ${assignedUser}`,
+        category: 'Signature',
+        lastModified: new Date().toISOString(),
+        content: signatureData,
+        signatureType: signatureType,
+        assignedUser: assignedUser
+      };
+      setTemplates(prev => prev.map(t => t.id === editingSignature.id ? updatedSignature : t));
+      setEditingSignature(null);
+    } else {
+      // Add new signature
+      const newSignatureTemplate: SignatureTemplate = {
+        id: Date.now().toString(),
+        name: signatureName || 'New Signature',
+        description: `Signature created for ${assignedUser}`,
+        category: 'Signature',
+        status: 'Active',
+        fields: [],
+        createdBy: 'Current User',
+        createdDate: new Date().toISOString(),
+        lastModified: new Date().toISOString(),
+        content: signatureData,
+        signatureType: signatureType,
+        assignedUser: assignedUser
+      };
+      setTemplates(prev => [...prev, newSignatureTemplate]);
+    }
+
     // Reset form and close modal
     setSignatureName('');
     setAssignedUser('');
     setTypedSignature('');
     clearCanvas();
     setShowCreateModal(false);
+    setEditingSignature(null);
   };
 
   const getStatusBadge = (status: string) => {
@@ -344,12 +362,23 @@ export const DigitalSignatures: React.FC = () => {
   };
 
   const handleEditTemplate = (template: SignatureTemplate) => {
-    setEditingTemplate(template);
-    setTemplateName(template.name);
-    setTemplateDescription(template.description);
-    setTemplateCategory(template.category);
-    setTemplateContent(template.content || '');
-    setShowCreateTemplateModal(true);
+    if (template.category === 'Signature') {
+      // Open signature edit modal
+      setEditingSignature(template);
+      setSignatureName(template.name);
+      setAssignedUser((template as any).assignedUser || '');
+      setSignatureType((template as any).signatureType || 'draw');
+      setTypedSignature(template.content || '');
+      setShowCreateModal(true);
+    } else {
+      // Open template edit modal
+      setEditingTemplate(template);
+      setTemplateName(template.name);
+      setTemplateDescription(template.description);
+      setTemplateCategory(template.category);
+      setTemplateContent(template.content || '');
+      setShowCreateTemplateModal(true);
+    }
   };
 
   const handleViewTemplate = (template: SignatureTemplate) => {
@@ -408,6 +437,29 @@ export const DigitalSignatures: React.FC = () => {
     }
     setConfirmDelete({show: false, templateId: null});
   };
+
+  // Filtered templates based on search and category
+  const filteredTemplates = templates.filter((template) => {
+    const matchesCategory = filterCategory === 'All' || template.category === filterCategory;
+    const search = searchTerm.trim().toLowerCase();
+    const matchesSearch =
+      search.length < 2 ||
+      template.name.toLowerCase().includes(search) ||
+      template.description.toLowerCase().includes(search);
+    return matchesCategory && matchesSearch;
+  });
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 6;
+  const totalTemplates = filteredTemplates.length;
+  const totalPages = Math.max(1, Math.ceil(totalTemplates / pageSize));
+  const paginatedTemplates = filteredTemplates.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+  // Reset to first page when filters/search change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterCategory, templates]);
 
   const tabs = [
     { id: 'templates', label: 'Templates', icon: FileSignature },
@@ -469,11 +521,49 @@ export const DigitalSignatures: React.FC = () => {
       <div className="flex-1 p-4 overflow-y-auto">
         {activeTab === 'templates' && (
           <div className="space-y-6">
+            {/* Search and Filter Controls */}
+            <div className="flex flex-row items-center space-x-4 mb-4">
+              <div className="relative">
+                {/* Search Icon */}
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                  <Search className="h-4 w-4" />
+                </span>
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search templates..."
+                  className="w-64 pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-200"
+                />
+              </div>
+              <div>
+                <select
+                  value={filterCategory}
+                  onChange={(e) => setFilterCategory(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-300 focus:border-blue-300"
+                >
+                  <option value="All">All Categories</option>
+                  <option value="SOP">SOP</option>
+                  <option value="Test Results">Test Results</option>
+                  <option value="Batch Records">Batch Records</option>
+                  <option value="Deviation Reports">Deviation Reports</option>
+                  <option value="Change Control">Change Control</option>
+                  <option value="Signature">Signature</option>
+                </select>
+              </div>
+            </div>
+            {/* Showing X of Y workflows */}
+            <div className="text-sm text-gray-500 mb-2">
+              Showing {totalTemplates === 0
+                ? '0'
+                : `${Math.min(currentPage * pageSize, totalTemplates)}`}
+              {` of ${totalTemplates} workflow${totalTemplates === 1 ? '' : 's'}`}
+            </div>
             {/* Templates Grid */}
             <div>
               <h3 className="text-lg font-medium text-gray-900 mb-4">Signature Templates</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {templates.map((template) => (
+                {paginatedTemplates.map((template) => (
                   <div key={template.id} className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
                     <div className="p-6">
                       <div className="flex items-start justify-between mb-4">
@@ -544,7 +634,40 @@ export const DigitalSignatures: React.FC = () => {
                     </div>
                   </div>
                 ))}
+                {paginatedTemplates.length === 0 && (
+                  <div className="col-span-full text-center text-gray-500 py-12">
+                    No templates found.
+                  </div>
+                )}
               </div>
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex justify-center mt-6 space-x-2">
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    className={`px-3 py-1 rounded border ${currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                  >
+                    Prev
+                  </button>
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <button
+                      key={i + 1}
+                      onClick={() => setCurrentPage(i + 1)}
+                      className={`px-3 py-1 rounded border ${currentPage === i + 1 ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-blue-50'}`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                    className={`px-3 py-1 rounded border ${currentPage === totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -579,7 +702,9 @@ export const DigitalSignatures: React.FC = () => {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <label className="text-sm font-medium text-gray-700">Email Notifications</label>
+                    <label className="text-sm font-medium text-gray-700">
+                      Email Notifications
+                    </label>
                     <p className="text-sm text-gray-500">Send email notifications for signature requests</p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
@@ -683,9 +808,18 @@ export const DigitalSignatures: React.FC = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-900">Create Digital Signature</h2>
+              <h2 className="text-xl font-semibold text-gray-900">
+                {editingSignature ? 'Edit Digital Signature' : 'Create Digital Signature'}
+              </h2>
               <button
-                onClick={() => setShowCreateModal(false)}
+                onClick={() => {
+                  setShowCreateModal(false);
+                  setEditingSignature(null);
+                  setSignatureName('');
+                  setAssignedUser('');
+                  setTypedSignature('');
+                  clearCanvas();
+                }}
                 className="text-gray-400 hover:text-gray-600"
               >
                 <X className="h-6 w-6" />
@@ -843,7 +977,14 @@ export const DigitalSignatures: React.FC = () => {
 
             <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
               <button
-                onClick={() => setShowCreateModal(false)}
+                onClick={() => {
+                  setShowCreateModal(false);
+                  setEditingSignature(null);
+                  setSignatureName('');
+                  setAssignedUser('');
+                  setTypedSignature('');
+                  clearCanvas();
+                }}
                 className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
               >
                 Cancel
@@ -853,7 +994,7 @@ export const DigitalSignatures: React.FC = () => {
                 className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
               >
                 <Save className="h-4 w-4" />
-                <span>Save Signature</span>
+                <span>{editingSignature ? 'Update Signature' : 'Save Signature'}</span>
               </button>
             </div>
           </div>

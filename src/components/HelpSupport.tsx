@@ -174,7 +174,7 @@ export const HelpSupport: React.FC = () => {
       {/* Content */}
       <div className="flex-1 p-4 overflow-hidden">
         {activeTab === 'chat' && (
-          <div className="h-full flex flex-col max-w-4xl mx-auto">
+          <div className="h-full flex flex-col w-full">
             {/* Chat Messages */}
             <div className="flex-1 bg-white rounded-lg border border-gray-200 p-4 overflow-y-auto mb-4">
               <div className="space-y-4">
@@ -236,7 +236,7 @@ export const HelpSupport: React.FC = () => {
         )}
 
         {activeTab === 'contact' && (
-          <div className="max-w-4xl mx-auto space-y-8">
+          <div className="w-full space-y-8">
             {/* Contact Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="bg-white rounded-lg border border-gray-200 p-6 text-center">
@@ -303,7 +303,7 @@ export const HelpSupport: React.FC = () => {
         )}
 
         {activeTab === 'faq' && (
-          <div className="max-w-4xl mx-auto space-y-6">
+          <div className="w-full space-y-6">
             {/* Search */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -358,7 +358,7 @@ export const HelpSupport: React.FC = () => {
         )}
 
         {activeTab === 'resources' && (
-          <div className="max-w-4xl mx-auto space-y-8">
+          <div className="w-full space-y-8">
             {/* Resource Categories */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="bg-white rounded-lg border border-gray-200 p-6">
