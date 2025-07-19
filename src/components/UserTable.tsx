@@ -78,27 +78,6 @@ export const UserTable: React.FC<UserTableProps> = ({
 
   return (
     <div className="bg-white rounded-lg shadow overflow-hidden flex flex-col h-full">
-      {/* Table Header with Pagination Info */}
-      <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-white">
-        <div className="text-sm text-gray-700">
-          Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} users
-        </div>
-        <div className="flex items-center space-x-2">
-          <label className="text-sm text-gray-700">Show:</label>
-          <select
-            value={itemsPerPage}
-            onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
-            className="px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          >
-            <option value={10}>10</option>
-            <option value={25}>25</option>
-            <option value={50}>50</option>
-            <option value={100}>100</option>
-          </select>
-          <span className="text-sm text-gray-700">per page</span>
-        </div>
-      </div>
-
       {/* Scrollable Table Container */}
       <div className="flex-1 overflow-hidden">
         <div className="overflow-auto h-full" style={{maxHeight: 'calc(100vh - 320px)'}}>
@@ -252,60 +231,28 @@ export const UserTable: React.FC<UserTableProps> = ({
         </div>
       </div>
 
-      {/* Fixed Pagination Controls */}
-      <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+      {/* Compact Pagination Controls */}
+      <div className="px-6 py-2 border-t border-gray-200 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <button
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage <= 1}
-            className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center px-2 py-1 border border-gray-300 rounded text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <ChevronLeft className="h-4 w-4 mr-1" />
+            <ChevronLeft className="h-3 w-3 mr-1" />
             Previous
           </button>
           <button
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage >= totalPages}
-            className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center px-2 py-1 border border-gray-300 rounded text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next
-            <ChevronRight className="h-4 w-4 ml-1" />
+            <ChevronRight className="h-3 w-3 ml-1" />
           </button>
         </div>
 
-        {/* Page Numbers */}
-        <div className="flex items-center space-x-1">
-          {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
-            let pageNum;
-            if (totalPages <= 7) {
-              pageNum = i + 1;
-            } else if (currentPage <= 4) {
-              pageNum = i + 1;
-            } else if (currentPage >= totalPages - 3) {
-              pageNum = totalPages - 6 + i;
-            } else {
-              pageNum = currentPage - 3 + i;
-            }
-
-            if (pageNum < 1 || pageNum > totalPages) return null;
-
-            return (
-              <button
-                key={pageNum}
-                onClick={() => onPageChange(pageNum)}
-                className={`px-3 py-2 text-sm font-medium rounded-md ${
-                  currentPage === pageNum
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
-                }`}
-              >
-                {pageNum}
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="text-sm text-gray-700">
+        <div className="text-xs text-gray-700">
           Page {currentPage} of {totalPages}
         </div>
       </div>

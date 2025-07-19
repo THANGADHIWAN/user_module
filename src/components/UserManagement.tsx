@@ -162,6 +162,27 @@ export const UserManagement: React.FC = () => {
         />
 
         <div className="bg-white rounded-lg shadow flex-1 min-h-0 flex flex-col">
+          {/* Results Info and Items Per Page */}
+          <div className="px-6 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50">
+            <div className="text-sm text-gray-700">
+              Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, totalUsers)} of {totalUsers} users
+            </div>
+            <div className="flex items-center space-x-2">
+              <label className="text-sm text-gray-700">Show:</label>
+              <select
+                value={itemsPerPage}
+                onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+                className="px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+              </select>
+              <span className="text-sm text-gray-700">per page</span>
+            </div>
+          </div>
+
           <UserTable
             users={users}
             selectedUsers={selectedUsers}

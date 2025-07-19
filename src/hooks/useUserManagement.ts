@@ -9,7 +9,7 @@ export const useUserManagement = () => {
   const [sortField, setSortField] = useState<keyof User | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const [filters, setFilters] = useState<FilterOptions>({
     role: 'All',
     status: 'All',
