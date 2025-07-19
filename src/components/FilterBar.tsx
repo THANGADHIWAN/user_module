@@ -8,8 +8,6 @@ interface FilterBarProps {
   filters: FilterOptions;
   onFilterChange: (filters: FilterOptions) => void;
   selectedCount: number;
-  onAddUser: () => void;
-  onExportUsers: () => void;
   onBulkActivate: () => void;
   onBulkDeactivate: () => void;
   onBulkDelete: () => void;
@@ -19,8 +17,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   filters,
   onFilterChange,
   selectedCount,
-  onAddUser,
-  onExportUsers,
   onBulkActivate,
   onBulkDeactivate,
   onBulkDelete
@@ -111,23 +107,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-2">
-          <button
-            onClick={onAddUser}
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            <UserPlus className="h-4 w-4 mr-2" />
-            Add User
-          </button>
-          <button
-            onClick={onExportUsers}
-            className="inline-flex items-center px-4 py-2 bg-gray-600 text-white text-sm rounded-md hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-          >
-            <Download className="h-4 w-4 mr-2" />
-            Export CSV
-          </button>
-        </div>
       </div>
 
       {/* Bulk Actions Row */}
