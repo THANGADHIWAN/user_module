@@ -207,27 +207,42 @@ export const UserTable: React.FC<UserTableProps> = ({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex items-center justify-end space-x-2 relative">
-                    <button
-                      onClick={() => onViewUser(user)}
-                      className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 relative z-20 transition-colors"
-                      title="View User"
-                    >
-                      <Eye className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={() => onEditUser(user)}
-                      className="text-indigo-600 hover:text-indigo-900 p-1 rounded hover:bg-indigo-50 relative z-20 transition-colors"
-                      title="Edit User"
-                    >
-                      <Edit className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={() => onDeleteUser(user)}
-                      className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 relative z-20 transition-colors"
-                      title="Delete User"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                    <div className="relative group">
+                      <button
+                        onClick={() => onViewUser(user)}
+                        className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </button>
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 whitespace-nowrap">
+                        View User
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-2 border-transparent border-t-gray-900"></div>
+                      </div>
+                    </div>
+                    <div className="relative group">
+                      <button
+                        onClick={() => onEditUser(user)}
+                        className="text-indigo-600 hover:text-indigo-900 p-1 rounded hover:bg-indigo-50 transition-colors"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </button>
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 whitespace-nowrap">
+                        Edit User
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-2 border-transparent border-t-gray-900"></div>
+                      </div>
+                    </div>
+                    <div className="relative group">
+                      <button
+                        onClick={() => onDeleteUser(user)}
+                        className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 whitespace-nowrap">
+                        Delete User
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-2 border-transparent border-t-gray-900"></div>
+                      </div>
+                    </div>
                   </div>
                 </td>
               </tr>
