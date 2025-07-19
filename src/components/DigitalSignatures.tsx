@@ -673,13 +673,13 @@ export const DigitalSignatures: React.FC = () => {
         )}
 
         {activeTab === 'settings' && (
-          <div className="w-full space-y-8">
+          <div className="w-full space-y-6">
             {/* Settings Grid Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Left Column */}
-              <div className="space-y-8">
+              <div className="space-y-6">
                 {/* General Settings */}
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <div className="bg-white rounded-lg border border-gray-200 p-5">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">General Settings</h3>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
@@ -733,7 +733,7 @@ export const DigitalSignatures: React.FC = () => {
                 </div>
 
                 {/* Security Settings */}
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <div className="bg-white rounded-lg border border-gray-200 p-5">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Security Settings</h3>
                   <div className="space-y-4">
                     <div>
@@ -767,9 +767,9 @@ export const DigitalSignatures: React.FC = () => {
               </div>
 
               {/* Right Column */}
-              <div className="space-y-8">
+              <div className="space-y-6">
                 {/* Certificate Management */}
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <div className="bg-white rounded-lg border border-gray-200 p-5">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Certificate Management</h3>
                   <div className="space-y-4">
                     <div>
@@ -808,7 +808,7 @@ export const DigitalSignatures: React.FC = () => {
                 </div>
 
                 {/* Compliance Settings */}
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <div className="bg-white rounded-lg border border-gray-200 p-5">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Compliance Settings</h3>
                   <div className="space-y-4">
                     <div>
@@ -847,7 +847,7 @@ export const DigitalSignatures: React.FC = () => {
                 </div>
 
                 {/* Integration Settings */}
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <div className="bg-white rounded-lg border border-gray-200 p-5">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Integration Settings</h3>
                   <div className="space-y-4">
                     <div>
