@@ -24,9 +24,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   const [showFilters, setShowFilters] = useState(false);
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow mb-6">
+    <div className="bg-white p-3 rounded-lg shadow">
       {/* Search and Filters Row */}
-      <div className="flex items-center justify-between gap-4 mb-4">
+      <div className="flex items-center justify-between gap-4 mb-3">
         <div className="flex items-center gap-4 flex-1">
           {/* Search */}
           <div className="relative flex-1 max-w-sm">
@@ -111,7 +111,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
       {/* Bulk Actions Row */}
       {selectedCount > 0 && (
-        <div className="flex items-center justify-between bg-blue-50 p-3 rounded-md">
+        <div className="flex items-center justify-between bg-blue-50 p-2 rounded-md mt-2">
           <span className="text-sm text-blue-800 font-medium">
             {selectedCount} user{selectedCount !== 1 ? 's' : ''} selected
           </span>
