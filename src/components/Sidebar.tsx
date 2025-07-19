@@ -30,7 +30,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeModule, onModuleChange }
       {/* Logo */}
       <div className="relative group">
         <FileSignature className="h-8 w-8 text-blue-600" />
-        <span className="absolute left-14 top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+        <span className="absolute left-14 top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-[9999]">
           Pharma LIMS
         </span>
       </div>
@@ -53,7 +53,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeModule, onModuleChange }
               >
                 <Icon className={`h-5 w-5 ${isActive ? 'text-blue-600' : 'text-gray-400'}`} />
               </button>
-              <span className="absolute left-14 top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+              <span className="absolute left-14 top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-[9999]">
                 {item.label}
               </span>
             </div>
@@ -66,7 +66,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeModule, onModuleChange }
         <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium">
           AJ
         </div>
-        <span className="absolute left-14 top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+        <span className="absolute left-14 top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-[9999]">
           Alice Johnson
         </span>
       </div>
