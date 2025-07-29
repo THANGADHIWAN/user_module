@@ -67,6 +67,15 @@ export const DigitalSignatureManagement: React.FC = () => {
   const [showSignatureModal, setShowSignatureModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingSignature, setEditingSignature] = useState<Signature | null>(null);
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{
+    isOpen: boolean;
+    signatureId: string;
+    signatureName: string;
+  }>({
+    isOpen: false,
+    signatureId: '',
+    signatureName: ''
+  });
 
   // Signature creation form state
   const [signatureName, setSignatureName] = useState('');
@@ -119,8 +128,32 @@ export const DigitalSignatureManagement: React.FC = () => {
 
   const handleDeleteSignature = (signatureId: string) => {
     const signature = signatures.find(s => s.id === signatureId);
-    setSignatures(prev => prev.filter(s => s.id !== signatureId));
-    showSuccess('Signature Deleted', `${signature?.name} has been successfully deleted.`);
+    if (signature) {
+      setDeleteConfirmation({
+        isOpen: true,
+        signatureId: signatureId,
+        signatureName: signature.name
+      });
+    }
+  };
+
+  const confirmDeleteSignature = () => {
+    const signatureName = deleteConfirmation.signatureName;
+    setSignatures(prev => prev.filter(s => s.id !== deleteConfirmation.signatureId));
+    setDeleteConfirmation({
+      isOpen: false,
+      signatureId: '',
+      signatureName: ''
+    });
+    showSuccess('Signature Deleted', `${signatureName} has been successfully deleted.`);
+  };
+
+  const cancelDeleteSignature = () => {
+    setDeleteConfirmation({
+      isOpen: false,
+      signatureId: '',
+      signatureName: ''
+    });
   };
 
   const handleToggleStatus = (signatureId: string) => {
@@ -299,6 +332,7 @@ export const DigitalSignatureManagement: React.FC = () => {
                     <button
                       onClick={() => handleDeleteSignature(signature.id)}
                       className="p-1 text-red-600 hover:text-red-900 hover:bg-red-50 rounded"
+                      title="Delete signature"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -507,6 +541,35 @@ export const DigitalSignatureManagement: React.FC = () => {
                   </p>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirmation.isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md m-4">
+            <div className="p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Delete Signature</h3>
+              <p className="text-gray-600 mb-6">
+                Are you sure you want to delete <strong>{deleteConfirmation.signatureName}</strong>? 
+                This action cannot be undone.
+              </p>
+              <div className="flex items-center justify-end space-x-3">
+                <button
+                  onClick={cancelDeleteSignature}
+                  className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDeleteSignature}
+                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         </div>

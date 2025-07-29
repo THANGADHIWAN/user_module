@@ -101,6 +101,15 @@ export const DigitalSignatureTemplates: React.FC = () => {
   const [showTemplateModal, setShowTemplateModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<SignatureTemplate | null>(null);
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{
+    isOpen: boolean;
+    templateId: string;
+    templateName: string;
+  }>({
+    isOpen: false,
+    templateId: '',
+    templateName: ''
+  });
 
   // Template creation form state
   const [templateName, setTemplateName] = useState('');
@@ -147,8 +156,32 @@ export const DigitalSignatureTemplates: React.FC = () => {
 
   const handleDeleteTemplate = (templateId: string) => {
     const template = templates.find(t => t.id === templateId);
-    setTemplates(prev => prev.filter(t => t.id !== templateId));
-    showSuccess('Template Deleted', `${template?.name} has been successfully deleted.`);
+    if (template) {
+      setDeleteConfirmation({
+        isOpen: true,
+        templateId: templateId,
+        templateName: template.name
+      });
+    }
+  };
+
+  const confirmDeleteTemplate = () => {
+    const templateName = deleteConfirmation.templateName;
+    setTemplates(prev => prev.filter(t => t.id !== deleteConfirmation.templateId));
+    setDeleteConfirmation({
+      isOpen: false,
+      templateId: '',
+      templateName: ''
+    });
+    showSuccess('Template Deleted', `${templateName} has been successfully deleted.`);
+  };
+
+  const cancelDeleteTemplate = () => {
+    setDeleteConfirmation({
+      isOpen: false,
+      templateId: '',
+      templateName: ''
+    });
   };
 
   const resetCreateForm = () => {
@@ -309,6 +342,7 @@ export const DigitalSignatureTemplates: React.FC = () => {
                     <button
                       onClick={() => handleDeleteTemplate(template.id)}
                       className="p-1 text-red-600 hover:text-red-900 hover:bg-red-50 rounded"
+                      title="Delete template"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -476,6 +510,35 @@ export const DigitalSignatureTemplates: React.FC = () => {
                   />
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirmation.isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md m-4">
+            <div className="p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Delete Template</h3>
+              <p className="text-gray-600 mb-6">
+                Are you sure you want to delete <strong>{deleteConfirmation.templateName}</strong>? 
+                This action cannot be undone.
+              </p>
+              <div className="flex items-center justify-end space-x-3">
+                <button
+                  onClick={cancelDeleteTemplate}
+                  className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDeleteTemplate}
+                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         </div>

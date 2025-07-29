@@ -960,13 +960,28 @@ const ConfirmDeleteModal: React.FC<{
   onCancel: () => void,
   onConfirm: () => void
 }> = ({ templateName, onCancel, onConfirm }) => (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
-    <div className="bg-white rounded-lg shadow-lg w-full max-w-sm p-6">
-      <h3 className="text-lg font-semibold mb-4">Delete Template</h3>
-      <p className="mb-6">Are you sure you want to delete <span className="font-bold">{templateName}</span>?</p>
-      <div className="flex justify-end space-x-2">
-        <button className="px-4 py-2 rounded bg-gray-200 text-gray-700" onClick={onCancel}>Cancel</button>
-        <button className="px-4 py-2 rounded bg-red-600 text-white" onClick={onConfirm}>Delete</button>
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-lg shadow-xl w-full max-w-md m-4">
+      <div className="p-6">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">Delete Template</h3>
+        <p className="text-gray-600 mb-6">
+          Are you sure you want to delete <strong>{templateName}</strong>? 
+          This action cannot be undone.
+        </p>
+        <div className="flex items-center justify-end space-x-3">
+          <button
+            onClick={onCancel}
+            className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </div>
   </div>
