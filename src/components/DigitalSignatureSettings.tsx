@@ -83,7 +83,7 @@ export const DigitalSignatureSettings: React.FC = () => {
 
       {/* Settings Content */}
       <div className="flex-1 p-4 overflow-auto">
-        <div className="max-w-4xl space-y-6">
+        <div className="w-full space-y-6">
           
           {/* General Settings */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">

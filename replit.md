@@ -44,6 +44,11 @@ This is a comprehensive pharmaceutical Laboratory Information Management System 
 - Templates section: Create, edit, delete, and view signature templates with filters
 - Signatures section: Manage individual user signatures with status control
 - Settings section: Configure signature policies, security, and compliance settings
+- **2025-07-29**: Enhanced Digital Signatures interface and toast notifications
+- Added contextual create buttons: Templates tab shows "Create Template", Signatures tab shows "Create Signature"
+- Implemented toast notifications for delete operations in CustomFields and Notifications components
+- Updated signature settings to use full width layout without spacing constraints
+- Added delete confirmation dialogs for templates and signatures with proper modal styling
 - **2025-07-18**: Enhanced UI/UX with proper confirmation modals
 - Optimized sidebar to icon-only design with hover tooltips and smooth animations
 - Replaced all browser alerts/confirms with proper modal components
