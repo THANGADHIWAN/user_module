@@ -733,7 +733,7 @@ export const Notifications: React.FC = () => {
       </div>
 
       {/* Template Modal Component */}
-      {showTemplateModal && (
+      {showTemplateModal && !showDeleteConfirm && (
         <TemplateModal
           mode={modalMode}
           template={selectedTemplate}
