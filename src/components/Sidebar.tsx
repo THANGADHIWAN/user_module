@@ -3,8 +3,6 @@ import {
   Users,
   GitBranch,
   FileSignature,
-  FileText,
-  Files,
   Settings,
   Bell,
   HelpCircle,

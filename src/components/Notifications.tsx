@@ -19,7 +19,6 @@ import {
   Trash2,
   Edit // <-- Add Edit icon import
 } from 'lucide-react';
-import { useToast } from '../contexts/ToastContext';
 
 interface Notification {
   id: string;
@@ -161,7 +160,6 @@ const sampleTemplates: NotificationTemplate[] = [
 ];
 
 export const Notifications: React.FC = () => {
-  const { showSuccess } = useToast();
   const [activeTab, setActiveTab] = useState<'templates' | 'settings'>('templates');
   const [notifications, setNotifications] = useState<Notification[]>(sampleNotifications);
   const [templates, setTemplates] = useState<NotificationTemplate[]>(sampleTemplates);
@@ -221,11 +219,7 @@ export const Notifications: React.FC = () => {
   };
 
   const deleteNotification = (id: string) => {
-    const notification = notifications.find(n => n.id === id);
     setNotifications(prev => prev.filter(notif => notif.id !== id));
-    if (notification) {
-      showSuccess('Notification Deleted', `${notification.title} has been successfully deleted.`);
-    }
   };
 
   const filteredNotifications = notifications.filter(notif => {
@@ -299,9 +293,7 @@ export const Notifications: React.FC = () => {
   // Delete Template
   const handleDeleteTemplate = () => {
     if (selectedTemplate) {
-      const templateName = selectedTemplate.name;
       setTemplates(prev => prev.filter(t => t.id !== selectedTemplate.id));
-      showSuccess('Template Deleted', `${templateName} has been successfully deleted.`);
     }
     setShowDeleteConfirm(false);
     closeTemplateModal();
