@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useToast } from '../contexts/ToastContext';
 import { 
   Bell, 
   Mail, 
@@ -160,6 +161,7 @@ const sampleTemplates: NotificationTemplate[] = [
 ];
 
 export const Notifications: React.FC = () => {
+  const { showSuccess } = useToast();
   const [activeTab, setActiveTab] = useState<'templates' | 'settings'>('templates');
   const [notifications, setNotifications] = useState<Notification[]>(sampleNotifications);
   const [templates, setTemplates] = useState<NotificationTemplate[]>(sampleTemplates);
@@ -293,7 +295,9 @@ export const Notifications: React.FC = () => {
   // Delete Template
   const handleDeleteTemplate = () => {
     if (selectedTemplate) {
+      const templateName = selectedTemplate.name;
       setTemplates(prev => prev.filter(t => t.id !== selectedTemplate.id));
+      showSuccess('Template Deleted', `${templateName} has been successfully deleted.`);
     }
     setShowDeleteConfirm(false);
     closeTemplateModal();

@@ -212,6 +212,7 @@ export const DigitalSignatureManagement: React.FC = () => {
           <p className="text-gray-600">Manage user digital signatures</p>
         </div>
         <button
+          data-create-signature
           onClick={() => {
             resetCreateForm();
             setShowCreateModal(true);

@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useToast } from '../contexts/ToastContext';
 import { 
   Settings, 
   Plus, 
@@ -221,6 +222,7 @@ const samplePages: ModulePage[] = [
 const snapToGrid = (value: number) => Math.round(value / GRID_SIZE) * GRID_SIZE;
 
 export const CustomFields: React.FC = () => {
+  const { showSuccess } = useToast();
   const [selectedModule, setSelectedModule] = useState<string>('All');
   const [pages, setPages] = useState<ModulePage[]>(samplePages);
   const [selectedPage, setSelectedPage] = useState<ModulePage | null>(null);
@@ -394,11 +396,13 @@ export const CustomFields: React.FC = () => {
 
   const confirmDeletePage = () => {
     if (!showDeleteDialog.page) return;
+    const pageName = showDeleteDialog.page.name;
     setPages(prev => prev.filter(p => p.id !== showDeleteDialog.page!.id));
     setShowDeleteDialog({ open: false, page: null });
     if (selectedPage?.id === showDeleteDialog.page.id) {
       setSelectedPage(null);
     }
+    showSuccess('Page Deleted', `${pageName} has been successfully deleted.`);
   };
 
   const cancelDeletePage = () => {

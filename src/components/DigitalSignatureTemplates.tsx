@@ -236,6 +236,7 @@ export const DigitalSignatureTemplates: React.FC = () => {
           <p className="text-gray-600">Manage document signature templates</p>
         </div>
         <button
+          data-create-template
           onClick={() => {
             resetCreateForm();
             setShowCreateModal(true);
