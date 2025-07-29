@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { WorkflowBuilder } from './WorkflowBuilder';
 import { WorkflowList } from './WorkflowList';
 import { Workflow, WorkflowCategory } from '../../types/workflow';
+import { useToast } from '../../contexts/ToastContext';
 import { Plus, ArrowLeft, Search, Filter } from 'lucide-react';
 
 const sampleWorkflows: Workflow[] = [
@@ -111,6 +112,7 @@ const sampleWorkflows: Workflow[] = [
 ];
 
 export const WorkflowManager: React.FC = () => {
+        const { showSuccess, showInfo } = useToast();
         const [workflows, setWorkflows] = useState<Workflow[]>(sampleWorkflows);
         const [currentView, setCurrentView] = useState<'list' | 'builder'>('list');
         const [selectedWorkflow, setSelectedWorkflow] = useState<Workflow | null>(null);
@@ -148,6 +150,7 @@ export const WorkflowManager: React.FC = () => {
                         setWorkflows(prev =>
                                 prev.map(w => (w.id === selectedWorkflow.id ? { ...selectedWorkflow, ...workflowData } : w))
                         );
+                        showSuccess('Workflow Updated', `${selectedWorkflow.name} has been successfully updated.`);
                 } else {
                         // Create new workflow
                         const newWorkflow: Workflow = {
@@ -162,6 +165,7 @@ export const WorkflowManager: React.FC = () => {
                                 ...workflowData
                         } as Workflow;
                         setWorkflows(prev => [...prev, newWorkflow]);
+                        showSuccess('Workflow Created', `${newWorkflow.name} has been successfully created.`);
                 }
                 setCurrentView('list');
         };
@@ -178,12 +182,14 @@ export const WorkflowManager: React.FC = () => {
         };
 
         const confirmDeleteWorkflow = () => {
+                const workflowName = deleteConfirmation.workflowName;
                 setWorkflows(prev => prev.filter(w => w.id !== deleteConfirmation.workflowId));
                 setDeleteConfirmation({
                         isOpen: false,
                         workflowId: '',
                         workflowName: ''
                 });
+                showSuccess('Workflow Deleted', `${workflowName} has been successfully deleted.`);
         };
 
         const cancelDeleteWorkflow = () => {
@@ -195,17 +201,20 @@ export const WorkflowManager: React.FC = () => {
         };
 
         const handleToggleWorkflowStatus = (workflowId: string) => {
+                const workflow = workflows.find(w => w.id === workflowId);
+                const newStatus = workflow?.status === 'Active' ? 'Inactive' : 'Active';
                 setWorkflows(prev =>
                         prev.map(workflow =>
                                 workflow.id === workflowId
                                         ? {
                                                         ...workflow,
-                                                        status: workflow.status === 'Active' ? 'Inactive' : 'Active',
+                                                        status: newStatus,
                                                         lastModified: new Date().toISOString()
                                           }
                                         : workflow
                         )
                 );
+                showInfo('Status Updated', `Workflow status changed to ${newStatus}.`);
         };
 
         const handleCloneWorkflow = (workflow: Workflow) => {
@@ -220,6 +229,7 @@ export const WorkflowManager: React.FC = () => {
                         version: 1
                 };
                 setWorkflows(prev => [...prev, clonedWorkflow]);
+                showSuccess('Workflow Cloned', `${clonedWorkflow.name} has been successfully created.`);
         };
 
         // Filter workflows based on search and filters
