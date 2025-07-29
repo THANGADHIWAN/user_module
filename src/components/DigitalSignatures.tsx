@@ -35,38 +35,40 @@ export const DigitalSignatures: React.FC = () => {
           <p className="text-gray-600">Manage signature templates, signatures, and settings</p>
         </div>
         <div className="flex items-center space-x-3">
-          <button
-            onClick={() => {
-              setActiveTab('templates');
-              // Trigger create template modal
-              setTimeout(() => {
-                const createTemplateBtn = document.querySelector('[data-create-template]');
-                if (createTemplateBtn) {
-                  (createTemplateBtn as HTMLButtonElement).click();
-                }
-              }, 100);
-            }}
-            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            <FileText className="h-5 w-5" />
-            <span>Create Template</span>
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab('signatures');
-              // Trigger create signature modal
-              setTimeout(() => {
-                const createSignatureBtn = document.querySelector('[data-create-signature]');
-                if (createSignatureBtn) {
-                  (createSignatureBtn as HTMLButtonElement).click();
-                }
-              }, 100);
-            }}
-            className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-          >
-            <Pen className="h-5 w-5" />
-            <span>Create Signature</span>
-          </button>
+          {activeTab === 'templates' && (
+            <button
+              onClick={() => {
+                // Trigger create template modal
+                setTimeout(() => {
+                  const createTemplateBtn = document.querySelector('[data-create-template]');
+                  if (createTemplateBtn) {
+                    (createTemplateBtn as HTMLButtonElement).click();
+                  }
+                }, 100);
+              }}
+              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              <FileText className="h-5 w-5" />
+              <span>Create Template</span>
+            </button>
+          )}
+          {activeTab === 'signatures' && (
+            <button
+              onClick={() => {
+                // Trigger create signature modal
+                setTimeout(() => {
+                  const createSignatureBtn = document.querySelector('[data-create-signature]');
+                  if (createSignatureBtn) {
+                    (createSignatureBtn as HTMLButtonElement).click();
+                  }
+                }, 100);
+              }}
+              className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+            >
+              <Pen className="h-5 w-5" />
+              <span>Create Signature</span>
+            </button>
+          )}
         </div>
       </div>
 
