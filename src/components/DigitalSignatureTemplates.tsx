@@ -229,24 +229,17 @@ export const DigitalSignatureTemplates: React.FC = () => {
 
   return (
     <div className="h-full flex flex-col">
-      {/* Header */}
-      <div className="p-4 border-b border-gray-200">
-        <div>
-          <h2 className="text-xl font-bold text-gray-900">Signature Templates</h2>
-          <p className="text-gray-600">Manage document signature templates</p>
-        </div>
-        <button
-          data-create-template
-          onClick={() => {
-            resetCreateForm();
-            setShowCreateModal(true);
-          }}
-          className="hidden"
-        >
-          <Plus className="h-5 w-5" />
-          <span>Create Template</span>
-        </button>
-      </div>
+      <button
+        data-create-template
+        onClick={() => {
+          resetCreateForm();
+          setShowCreateModal(true);
+        }}
+        className="hidden"
+      >
+        <Plus className="h-5 w-5" />
+        <span>Create Template</span>
+      </button>
 
       {/* Filters */}
       <div className="p-4 border-b border-gray-200 bg-gray-50">

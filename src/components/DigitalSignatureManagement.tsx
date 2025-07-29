@@ -205,24 +205,17 @@ export const DigitalSignatureManagement: React.FC = () => {
 
   return (
     <div className="h-full flex flex-col">
-      {/* Header */}
-      <div className="p-4 border-b border-gray-200">
-        <div>
-          <h2 className="text-xl font-bold text-gray-900">Digital Signatures</h2>
-          <p className="text-gray-600">Manage user digital signatures</p>
-        </div>
-        <button
-          data-create-signature
-          onClick={() => {
-            resetCreateForm();
-            setShowCreateModal(true);
-          }}
-          className="hidden"
-        >
-          <Pen className="h-5 w-5" />
-          <span>Create Signature</span>
-        </button>
-      </div>
+      <button
+        data-create-signature
+        onClick={() => {
+          resetCreateForm();
+          setShowCreateModal(true);
+        }}
+        className="hidden"
+      >
+        <Pen className="h-5 w-5" />
+        <span>Create Signature</span>
+      </button>
 
       {/* Filters */}
       <div className="p-4 border-b border-gray-200 bg-gray-50">
