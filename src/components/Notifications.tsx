@@ -812,7 +812,7 @@ const TemplateModal: React.FC<{
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
       <div
-        className={`bg-white rounded-lg shadow-lg w-full ${
+        className={`bg-white rounded-lg border border-gray-300 w-full ${
           isView ? 'max-w-lg' : 'max-w-2xl'
         } px-8 py-6 relative`}
       >
@@ -965,7 +965,7 @@ const ConfirmDeleteModal: React.FC<{
   onConfirm: () => void
 }> = ({ templateName, onCancel, onConfirm }) => (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div className="bg-white rounded-lg w-full max-w-md m-4">
+    <div className="bg-white rounded-lg border border-gray-300 w-full max-w-md m-4">
       <div className="p-6">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Delete Template</h3>
         <p className="text-gray-600 mb-6">
