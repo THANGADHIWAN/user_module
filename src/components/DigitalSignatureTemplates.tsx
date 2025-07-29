@@ -230,7 +230,7 @@ export const DigitalSignatureTemplates: React.FC = () => {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200">
+      <div className="p-4 border-b border-gray-200">
         <div>
           <h2 className="text-xl font-bold text-gray-900">Signature Templates</h2>
           <p className="text-gray-600">Manage document signature templates</p>
@@ -241,7 +241,7 @@ export const DigitalSignatureTemplates: React.FC = () => {
             resetCreateForm();
             setShowCreateModal(true);
           }}
-          className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="hidden"
         >
           <Plus className="h-5 w-5" />
           <span>Create Template</span>
