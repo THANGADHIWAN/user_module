@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ReactFlowProvider } from 'reactflow';
+import { ToastProvider } from './contexts/ToastContext';
 import { Sidebar } from './components/Sidebar';
 import { UserManagement } from './components/UserManagement';
 import { WorkflowManager } from './components/workflow/WorkflowManager';
@@ -38,14 +39,16 @@ function App() {
   };
 
   return (
-    <div className="h-screen bg-gray-50 flex">
-      <Sidebar activeModule={activeModule} onModuleChange={setActiveModule} />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <main className="flex-1 overflow-hidden bg-gray-50">
-          {renderModule()}
-        </main>
+    <ToastProvider>
+      <div className="h-screen bg-gray-50 flex">
+        <Sidebar activeModule={activeModule} onModuleChange={setActiveModule} />
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <main className="flex-1 overflow-hidden bg-gray-50">
+            {renderModule()}
+          </main>
+        </div>
       </div>
-    </div>
+    </ToastProvider>
   );
 }
 

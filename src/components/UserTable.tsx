@@ -1,7 +1,7 @@
 import React from 'react';
 import { User } from '../types/user';
 import { formatDistanceToNow } from '../utils/dateUtils';
-import { Eye, Edit, Trash2, MoreHorizontal, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Eye, Edit, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface UserTableProps {
   users: User[];
@@ -16,10 +16,7 @@ interface UserTableProps {
   onSort: (field: keyof User) => void;
   currentPage: number;
   totalPages: number;
-  itemsPerPage: number;
-  totalItems: number;
   onPageChange: (page: number) => void;
-  onItemsPerPageChange: (itemsPerPage: number) => void;
 }
 
 export const UserTable: React.FC<UserTableProps> = ({
@@ -35,10 +32,7 @@ export const UserTable: React.FC<UserTableProps> = ({
   onSort,
   currentPage,
   totalPages,
-  itemsPerPage,
-  totalItems,
-  onPageChange,
-  onItemsPerPageChange
+  onPageChange
 }) => {
   const getSortIcon = (field: keyof User) => {
     if (sortField !== field) return '↕️';
@@ -80,7 +74,7 @@ export const UserTable: React.FC<UserTableProps> = ({
     <div className="bg-white rounded-lg shadow overflow-hidden flex flex-col h-full">
       {/* Scrollable Table Container */}
       <div className="flex-1 overflow-hidden">
-        <div className="overflow-auto h-full" style={{maxHeight: 'calc(100vh - 320px)'}}>
+        <div className="overflow-auto" style={{maxHeight: 'calc(100vh - 300px)'}}>
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50 sticky top-0 z-10">
               <tr>

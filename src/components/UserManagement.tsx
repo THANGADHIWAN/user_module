@@ -5,13 +5,13 @@ import { UserDetailsModal } from './UserDetailsModal';
 import { AddUserModal } from './AddUserModal';
 import { ConfirmationModal } from './ConfirmationModal';
 import { useUserManagement } from '../hooks/useUserManagement';
+
 import { User } from '../types/user';
 import { Users, UserPlus, Download } from 'lucide-react';
 
 export const UserManagement: React.FC = () => {
   const {
     users,
-    allUsers,
     totalUsers,
     selectedUsers,
     currentPage,
@@ -204,10 +204,7 @@ export const UserManagement: React.FC = () => {
             onSort={handleSort}
             currentPage={currentPage}
             totalPages={totalPages}
-            itemsPerPage={itemsPerPage}
-            totalItems={totalUsers}
             onPageChange={handlePageChange}
-            onItemsPerPageChange={handleItemsPerPageChange}
           />
         </div>
 

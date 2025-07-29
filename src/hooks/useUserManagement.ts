@@ -2,14 +2,16 @@ import { useState, useMemo } from 'react';
 import { User, FilterOptions } from '../types/user';
 import { sampleUsers } from '../data/sampleData';
 import { isDateInRange } from '../utils/dateUtils';
+import { useToast } from '../contexts/ToastContext';
 
 export const useUserManagement = () => {
+  const { showSuccess, showInfo } = useToast();
   const [users, setUsers] = useState<User[]>(sampleUsers);
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
   const [sortField, setSortField] = useState<keyof User | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [filters, setFilters] = useState<FilterOptions>({
     role: 'All',
     status: 'All',
@@ -109,6 +111,7 @@ export const useUserManagement = () => {
 
   const updateUser = (updatedUser: User) => {
     setUsers(prev => prev.map(user => user.id === updatedUser.id ? updatedUser : user));
+    showSuccess('User Updated', `${updatedUser.name} has been successfully updated.`);
   };
 
   const addUser = (userData: Omit<User, 'id' | 'createdDate' | 'auditLog'>) => {
@@ -126,15 +129,20 @@ export const useUserManagement = () => {
       }]
     };
     setUsers(prev => [...prev, newUser]);
+    showSuccess('User Created', `${userData.name} has been successfully added to the system.`);
   };
 
   const deleteUser = (userId: string) => {
+    const user = users.find(u => u.id === userId);
     setUsers(prev => prev.filter(user => user.id !== userId));
     setSelectedUsers(prev => {
       const newSelected = new Set(prev);
       newSelected.delete(userId);
       return newSelected;
     });
+    if (user) {
+      showSuccess('User Deleted', `${user.name} has been successfully deleted.`);
+    }
   };
 
   const bulkUpdateStatus = (userIds: string[], status: 'Active' | 'Inactive') => {
@@ -142,11 +150,14 @@ export const useUserManagement = () => {
       userIds.includes(user.id) ? { ...user, status } : user
     ));
     setSelectedUsers(new Set());
+    showInfo('Status Updated', `${userIds.length} user(s) status changed to ${status}.`);
   };
 
   const bulkDelete = (userIds: string[]) => {
+    const count = userIds.length;
     setUsers(prev => prev.filter(user => !userIds.includes(user.id)));
     setSelectedUsers(new Set());
+    showSuccess('Users Deleted', `${count} user(s) have been successfully deleted.`);
   };
 
   const exportToCSV = () => {
@@ -171,6 +182,7 @@ export const useUserManagement = () => {
     a.download = 'users.csv';
     a.click();
     window.URL.revokeObjectURL(url);
+    showInfo('Export Complete', `${filteredUsers.length} users exported to CSV file.`);
   };
 
   return {
