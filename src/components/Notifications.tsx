@@ -457,24 +457,7 @@ export const Notifications: React.FC = () => {
               )}
             </div>
 
-            {/* Template Modal */}
-            {showTemplateModal && (
-              <TemplateModal
-                mode={modalMode}
-                template={selectedTemplate}
-                onClose={closeTemplateModal}
-                onSave={handleSaveTemplate}
-              />
-            )}
 
-            {/* Delete Confirmation Modal */}
-            {showDeleteConfirm && (
-              <ConfirmDeleteModal
-                templateName={selectedTemplate?.name || ''}
-                onCancel={() => setShowDeleteConfirm(false)}
-                onConfirm={handleDeleteTemplate}
-              />
-            )}
           </div>
         )}
 
