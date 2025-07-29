@@ -182,12 +182,14 @@ export const WorkflowManager: React.FC = () => {
         };
 
         const confirmDeleteWorkflow = () => {
+                const workflowName = deleteConfirmation.workflowName;
                 setWorkflows(prev => prev.filter(w => w.id !== deleteConfirmation.workflowId));
                 setDeleteConfirmation({
                         isOpen: false,
                         workflowId: '',
                         workflowName: ''
                 });
+                showSuccess('Workflow Deleted', `${workflowName} has been successfully deleted.`);
         };
 
         const cancelDeleteWorkflow = () => {
@@ -373,8 +375,8 @@ export const WorkflowManager: React.FC = () => {
                         
                         {/* Delete Confirmation Modal */}
                         {deleteConfirmation.isOpen && (
-                                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                                        <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+                                <div className="fixed inset-0 flex items-center justify-center z-50">
+                                        <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
                                                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                                                         Delete Workflow
                                                 </h3>

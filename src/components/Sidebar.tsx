@@ -20,8 +20,6 @@ const menuItems = [
   { id: 'users', label: 'User Management', icon: Users },
   { id: 'workflows', label: 'Workflow Builder', icon: GitBranch },
   { id: 'signatures', label: 'Digital Signatures', icon: FileSignature },
-  { id: 'signature-templates', label: 'Signature Templates', icon: FileText },
-  { id: 'signature-documents', label: 'Signature Documents', icon: Files },
   { id: 'notifications', label: 'Notifications', icon: Bell },
   { id: 'custom-fields', label: 'Custom Fields', icon: Sliders },
   { id: 'settings', label: 'System Settings', icon: Settings },
