@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { WorkflowBuilder } from './WorkflowBuilder';
 import { WorkflowList } from './WorkflowList';
 import { Workflow, WorkflowCategory } from '../../types/workflow';
+import { useToast } from '../../contexts/ToastContext';
 import { Plus, ArrowLeft, Search, Filter } from 'lucide-react';
 
 const sampleWorkflows: Workflow[] = [
@@ -111,6 +112,7 @@ const sampleWorkflows: Workflow[] = [
 ];
 
 export const WorkflowManager: React.FC = () => {
+        const { showSuccess, showInfo } = useToast();
         const [workflows, setWorkflows] = useState<Workflow[]>(sampleWorkflows);
         const [currentView, setCurrentView] = useState<'list' | 'builder'>('list');
         const [selectedWorkflow, setSelectedWorkflow] = useState<Workflow | null>(null);
@@ -148,6 +150,7 @@ export const WorkflowManager: React.FC = () => {
                         setWorkflows(prev =>
                                 prev.map(w => (w.id === selectedWorkflow.id ? { ...selectedWorkflow, ...workflowData } : w))
                         );
+                        showSuccess('Workflow Updated', `${workflowData.name || selectedWorkflow.name} has been successfully updated.`);
                 } else {
                         // Create new workflow
                         const newWorkflow: Workflow = {
@@ -162,6 +165,7 @@ export const WorkflowManager: React.FC = () => {
                                 ...workflowData
                         } as Workflow;
                         setWorkflows(prev => [...prev, newWorkflow]);
+                        showSuccess('Workflow Created', `${workflowData.name || 'New Workflow'} has been successfully created.`);
                 }
                 setCurrentView('list');
         };

@@ -71,11 +71,10 @@ export const UserTable: React.FC<UserTableProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden flex flex-col h-full">
+    <>
       {/* Scrollable Table Container */}
-      <div className="flex-1 overflow-hidden">
-        <div className="overflow-auto" style={{maxHeight: 'calc(100vh - 300px)'}}>
-          <table className="min-w-full divide-y divide-gray-200">
+      <div className="flex-1 overflow-auto">
+        <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50 sticky top-0 z-10">
               <tr>
                 <th scope="col" className="px-6 py-3 text-left bg-gray-50 sticky top-0 z-10">
@@ -221,12 +220,11 @@ export const UserTable: React.FC<UserTableProps> = ({
               </tr>
             ))}
           </tbody>
-          </table>
-        </div>
+        </table>
       </div>
 
       {/* Compact Pagination Controls */}
-      <div className="px-6 py-2 border-t border-gray-200 flex items-center justify-between">
+      <div className="px-6 py-2 border-t border-gray-200 flex items-center justify-between bg-white">
         <div className="flex items-center space-x-2">
           <button
             onClick={() => onPageChange(currentPage - 1)}
@@ -250,6 +248,6 @@ export const UserTable: React.FC<UserTableProps> = ({
           Page {currentPage} of {totalPages}
         </div>
       </div>
-    </div>
+    </>
   );
 };

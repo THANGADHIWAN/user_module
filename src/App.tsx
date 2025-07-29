@@ -5,6 +5,8 @@ import { Sidebar } from './components/Sidebar';
 import { UserManagement } from './components/UserManagement';
 import { WorkflowManager } from './components/workflow/WorkflowManager';
 import { DigitalSignatures } from './components/DigitalSignatures';
+import { SignatureTemplates } from './components/SignatureTemplates';
+import { SignatureDocuments } from './components/SignatureDocuments';
 import { Notifications } from './components/Notifications';
 import { SystemSettings } from './components/SystemSettings';
 import { HelpSupport } from './components/HelpSupport';
@@ -25,6 +27,10 @@ function App() {
         );
       case 'signatures':
         return <DigitalSignatures />;
+      case 'signature-templates':
+        return <SignatureTemplates />;
+      case 'signature-documents':
+        return <SignatureDocuments />;
       case 'notifications':
         return <Notifications />;
       case 'custom-fields':
