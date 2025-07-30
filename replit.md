@@ -22,6 +22,11 @@ This is a comprehensive pharmaceutical Laboratory Information Management System 
 - Help & Support module
 
 ## Recent Changes
+- **2025-07-30**: Successfully completed project migration to Replit environment
+- Fixed missing toast notifications for create/edit operations in CustomFields and Notifications
+- Resolved vertical scrolling issues in UserTable component
+- Improved back button UI (changed to arrow-only design with ChevronLeft icon)
+- All components now properly integrated with toast notification system
 - **2025-07-29**: Successfully completed migration from Replit Agent to standard Replit environment
 - Updated server configuration to use 0.0.0.0:5000 for Replit compatibility
 - Configured proper development workflow and installed missing dependencies

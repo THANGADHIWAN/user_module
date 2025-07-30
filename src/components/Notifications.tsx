@@ -286,8 +286,10 @@ export const Notifications: React.FC = () => {
   const handleSaveTemplate = (template: NotificationTemplate) => {
     if (modalMode === 'create') {
       setTemplates(prev => [...prev, { ...template, id: (Date.now()).toString() }]);
+      showSuccess('Template Created', `${template.name} has been successfully created.`);
     } else if (modalMode === 'edit' && selectedTemplate) {
       setTemplates(prev => prev.map(t => t.id === selectedTemplate.id ? template : t));
+      showSuccess('Template Updated', `${template.name} has been successfully updated.`);
     }
     closeTemplateModal();
   };

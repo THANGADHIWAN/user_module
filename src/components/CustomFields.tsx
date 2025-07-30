@@ -27,7 +27,8 @@ import {
   Move,
   MoreVertical,
   Upload,
-  Search
+  Search,
+  ChevronLeft
 } from 'lucide-react';
 
 interface CustomField {
@@ -388,6 +389,7 @@ export const CustomFields: React.FC = () => {
     setSelectedPage(updatedPage);
     setShowFieldModal(false);
     setEditingField(null);
+    showSuccess('Field Updated', `${formData.label || 'Field'} has been successfully updated.`);
   };
 
   const handleDeletePage = (page: ModulePage) => {
@@ -432,6 +434,7 @@ export const CustomFields: React.FC = () => {
     setPages(prev => [...prev, newPage]);
     setShowAddPageModal(false);
     setSelectedPage(newPage);
+    showSuccess('Page Created', `${newPageData.name} has been successfully created.`);
   };
 
   const renderFieldPreview = (field: CustomField) => {
@@ -940,9 +943,9 @@ export const CustomFields: React.FC = () => {
               <div className="flex items-center space-x-4">
                 <button
                   onClick={() => setSelectedPage(null)}
-                  className="text-gray-600 hover:text-gray-900"
+                  className="text-gray-600 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100"
                 >
-                  ← Back to Pages
+                  <ChevronLeft className="h-5 w-5" />
                 </button>
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900">{selectedPage.name}</h2>
