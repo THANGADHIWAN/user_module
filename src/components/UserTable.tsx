@@ -75,10 +75,10 @@ export const UserTable: React.FC<UserTableProps> = ({
       {/* Scrollable Table Container */}
       <div className="flex-1 overflow-hidden">
         <div className="overflow-y-auto h-full">
-          <table className="w-full divide-y divide-gray-200">
+          <table className="w-full table-fixed divide-y divide-gray-200">
             <thead className="bg-gray-50 sticky top-0 z-10">
               <tr>
-                <th scope="col" className="px-3 py-3 text-left bg-gray-50 sticky top-0 z-10 w-8">
+                <th scope="col" className="px-4 py-3 text-left bg-gray-50 sticky top-0 z-10 w-12">
                   <input
                     type="checkbox"
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
@@ -88,47 +88,53 @@ export const UserTable: React.FC<UserTableProps> = ({
                 </th>
                 <th
                   scope="col"
-                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10 min-w-0"
+                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10"
                   onClick={() => onSort('name')}
+                  style={{ width: '25%' }}
                 >
                   User Name {getSortIcon('name')}
                 </th>
                 <th
                   scope="col"
-                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10 w-24"
+                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10"
                   onClick={() => onSort('role')}
+                  style={{ width: '12%' }}
                 >
                   Role {getSortIcon('role')}
                 </th>
                 <th
                   scope="col"
-                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10 w-20"
+                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10"
                   onClick={() => onSort('status')}
+                  style={{ width: '10%' }}
                 >
                   Status {getSortIcon('status')}
                 </th>
                 <th
                   scope="col"
-                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10 w-24"
+                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10"
                   onClick={() => onSort('lastLogin')}
+                  style={{ width: '12%' }}
                 >
                   Last Login {getSortIcon('lastLogin')}
                 </th>
                 <th
                   scope="col"
-                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10 w-24"
+                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10"
                   onClick={() => onSort('digitalSignatureStatus')}
+                  style={{ width: '13%' }}
                 >
                   Digital Signature {getSortIcon('digitalSignatureStatus')}
                 </th>
                 <th
                   scope="col"
-                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10 w-24"
+                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10"
                   onClick={() => onSort('createdDate')}
+                  style={{ width: '12%' }}
                 >
                   Created Date {getSortIcon('createdDate')}
                 </th>
-                <th scope="col" className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50 sticky top-0 z-10 w-20">
+                <th scope="col" className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50 sticky top-0 z-10" style={{ width: '8%' }}>
                   Actions
                 </th>
               </tr>
@@ -136,7 +142,7 @@ export const UserTable: React.FC<UserTableProps> = ({
           <tbody className="bg-white divide-y divide-gray-200">
             {users.map((user) => (
               <tr key={user.id} className="hover:bg-gray-50 relative">
-                <td className="px-3 py-3">
+                <td className="px-4 py-4">
                   <input
                     type="checkbox"
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
@@ -144,7 +150,7 @@ export const UserTable: React.FC<UserTableProps> = ({
                     onChange={() => onSelectUser(user.id)}
                   />
                 </td>
-                <td className="px-3 py-3 min-w-0">
+                <td className="px-4 py-4">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 h-8 w-8">
                       <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium">
@@ -157,28 +163,28 @@ export const UserTable: React.FC<UserTableProps> = ({
                     </div>
                   </div>
                 </td>
-                <td className="px-3 py-3">
+                <td className="px-4 py-4">
                   <span className={getRoleBadge(user.role)}>
                     {user.role}
                   </span>
                 </td>
-                <td className="px-3 py-3">
+                <td className="px-4 py-4">
                   <span className={getStatusBadge(user.status)}>
                     {user.status}
                   </span>
                 </td>
-                <td className="px-3 py-3 text-xs text-gray-500">
+                <td className="px-4 py-4 text-sm text-gray-500">
                   {user.lastLogin ? formatDistanceToNow(user.lastLogin) : 'Never'}
                 </td>
-                <td className="px-3 py-3">
+                <td className="px-4 py-4">
                   <span className={getSignatureBadge(user.digitalSignatureStatus)}>
                     {user.digitalSignatureStatus}
                   </span>
                 </td>
-                <td className="px-3 py-3 text-xs text-gray-500">
+                <td className="px-4 py-4 text-sm text-gray-500">
                   {formatDistanceToNow(user.createdDate)}
                 </td>
-                <td className="px-3 py-3 text-right">
+                <td className="px-4 py-4 text-right">
                   <div className="flex items-center justify-end space-x-2 relative">
                     <div className="relative group">
                       <button
