@@ -12,7 +12,7 @@ export default defineConfig({
     port: 5000,
     allowedHosts: [
       "all",
-      "36347c12-f492-44ce-9b8f-0d703dec878f-00-3j2r4a728owqx.picard.replit.dev",
+      "4135ac52-4029-4042-8d3e-456d5a514eb2-00-ba4s336a1ub7.picard.replit.dev",
       "localhost",
       "127.0.0.1",
     ],

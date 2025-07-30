@@ -71,14 +71,14 @@ export const UserTable: React.FC<UserTableProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden flex flex-col h-full">
+    <div className="bg-white rounded-lg shadow flex flex-col h-full">
       {/* Scrollable Table Container */}
-      <div className="flex-1">
-        <div className="overflow-auto max-h-96">
-          <table className="min-w-full divide-y divide-gray-200">
+      <div className="flex-1 overflow-hidden">
+        <div className="overflow-y-auto h-full">
+          <table className="w-full divide-y divide-gray-200">
             <thead className="bg-gray-50 sticky top-0 z-10">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left bg-gray-50 sticky top-0 z-10">
+                <th scope="col" className="px-3 py-3 text-left bg-gray-50 sticky top-0 z-10 w-8">
                   <input
                     type="checkbox"
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
@@ -88,47 +88,47 @@ export const UserTable: React.FC<UserTableProps> = ({
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10"
+                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10 min-w-0"
                   onClick={() => onSort('name')}
                 >
                   User Name {getSortIcon('name')}
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10"
+                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10 w-24"
                   onClick={() => onSort('role')}
                 >
                   Role {getSortIcon('role')}
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10"
+                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10 w-20"
                   onClick={() => onSort('status')}
                 >
                   Status {getSortIcon('status')}
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10"
+                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10 w-24"
                   onClick={() => onSort('lastLogin')}
                 >
                   Last Login {getSortIcon('lastLogin')}
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10"
+                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10 w-24"
                   onClick={() => onSort('digitalSignatureStatus')}
                 >
                   Digital Signature {getSortIcon('digitalSignatureStatus')}
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10"
+                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 bg-gray-50 sticky top-0 z-10 w-24"
                   onClick={() => onSort('createdDate')}
                 >
                   Created Date {getSortIcon('createdDate')}
                 </th>
-                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50 sticky top-0 z-10">
+                <th scope="col" className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50 sticky top-0 z-10 w-20">
                   Actions
                 </th>
               </tr>
@@ -136,7 +136,7 @@ export const UserTable: React.FC<UserTableProps> = ({
           <tbody className="bg-white divide-y divide-gray-200">
             {users.map((user) => (
               <tr key={user.id} className="hover:bg-gray-50 relative">
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-3 py-3">
                   <input
                     type="checkbox"
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
@@ -144,41 +144,41 @@ export const UserTable: React.FC<UserTableProps> = ({
                     onChange={() => onSelectUser(user.id)}
                   />
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-3 py-3 min-w-0">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0 h-10 w-10">
-                      <div className="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
+                    <div className="flex-shrink-0 h-8 w-8">
+                      <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium">
                         {user.name.split(' ').map(n => n[0]).join('')}
                       </div>
                     </div>
-                    <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                      <div className="text-sm text-gray-500">{user.email}</div>
+                    <div className="ml-3 min-w-0 flex-1">
+                      <div className="text-sm font-medium text-gray-900 truncate">{user.name}</div>
+                      <div className="text-xs text-gray-500 truncate">{user.email}</div>
                     </div>
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-3 py-3">
                   <span className={getRoleBadge(user.role)}>
                     {user.role}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-3 py-3">
                   <span className={getStatusBadge(user.status)}>
                     {user.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-3 py-3 text-xs text-gray-500">
                   {user.lastLogin ? formatDistanceToNow(user.lastLogin) : 'Never'}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-3 py-3">
                   <span className={getSignatureBadge(user.digitalSignatureStatus)}>
                     {user.digitalSignatureStatus}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-3 py-3 text-xs text-gray-500">
                   {formatDistanceToNow(user.createdDate)}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <td className="px-3 py-3 text-right">
                   <div className="flex items-center justify-end space-x-2 relative">
                     <div className="relative group">
                       <button
