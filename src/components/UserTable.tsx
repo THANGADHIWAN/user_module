@@ -74,7 +74,7 @@ export const UserTable: React.FC<UserTableProps> = ({
     <div className="bg-white rounded-lg shadow flex flex-col h-full">
       {/* Scrollable Table Container */}
       <div className="flex-1 overflow-hidden">
-        <div className="overflow-y-auto" style={{ height: 'calc(100% - 60px)' }}>
+        <div className="overflow-y-auto h-full">
           <table className="w-full table-fixed divide-y divide-gray-200">
             <thead className="bg-gray-50 sticky top-0 z-10">
               <tr>
@@ -232,7 +232,7 @@ export const UserTable: React.FC<UserTableProps> = ({
       </div>
 
       {/* Compact Pagination Controls */}
-      <div className="px-6 py-3 border-t border-gray-200 flex items-center justify-between bg-gray-50 flex-shrink-0">
+      <div className="px-6 py-2 border-t border-gray-200 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <button
             onClick={() => onPageChange(currentPage - 1)}
